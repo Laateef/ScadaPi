@@ -12,3 +12,4 @@ class MainPageTest(TestCase):
 	def test_title_is_correct(self):
 		self.browser.get('http://localhost:8000')
 		self.assertIn('ScadaPi', self.browser.title)
+		
