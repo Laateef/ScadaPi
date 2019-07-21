@@ -22,6 +22,8 @@ ADC_CFG_MODE             = 0x00 # Continuous conversion mode
 ADC_CFG_DR               = 0x80 # 128 samples per second
 ADC_CFG_COMP_QUE         = 0x03 # Disable the comparator and put ALERT/RDY in high state
 
+ADC_SAMPLE_PER_SECOND    = 0x80
+
 AIN_CMN_CFG_HByte = ADC_CFG_OS | ADC_CFG_PGA | ADC_CFG_MODE
 AIN_CMN_CFG_LByte = ADC_CFG_DR | ADC_CFG_COMP_QUE
 
