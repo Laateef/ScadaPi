@@ -1,5 +1,7 @@
 # ADS1115 Bit Enumeration
 # -----------------------
+CHANNEL_COUNT            = 0x04
+ 
 # ADC I2C Address
 ADC_I2C_ADDRESS_1        = 0x48 
 ADC_I2C_ADDRESS_2        = 0x49
@@ -20,6 +22,6 @@ ADC_CFG_MODE             = 0x00 # Continuous conversion mode
 ADC_CFG_DR               = 0x80 # 128 samples per second
 ADC_CFG_COMP_QUE         = 0x03 # Disable the comparator and put ALERT/RDY in high state
 
-AIN_CFG_HByte = ADC_CFG_OS | ADC_CFG_PGA | ADC_CFG_MODE
-AIN_CFG_LByte = ADC_CFG_DR | ADC_CFG_COMP_QUE
+AIN_CMN_CFG_HByte = ADC_CFG_OS | ADC_CFG_PGA | ADC_CFG_MODE
+AIN_CMN_CFG_LByte = ADC_CFG_DR | ADC_CFG_COMP_QUE
 
