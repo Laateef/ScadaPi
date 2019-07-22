@@ -72,3 +72,43 @@ class AnalogInputModuleTest(TestCase):
 		self.assertAlmostEqual(args[0], 1.0 / Enums.ADC_SAMPLE_PER_SECOND + 0.001) 
 		self.assertTrue(self.bus.read_i2c_block_data.called)
 
+	@patch('smbus2.SMBus.read_i2c_block_data', return_value = [0x00, 0x00])
+	def test_readChannel_returns_integer(self, read_i2c_block_data_mock):
+		self.bus.read_i2c_block_data = read_i2c_block_data_mock
+
+		adc_value = self.adc.readChannel(7)
+
+		self.assertEqual(adc_value, 0)
+		self.assertEqual(type(adc_value), int)
+
+	@patch('smbus2.SMBus.read_i2c_block_data')
+	def test_readChannel_returns_two_complement_conversion(self, read_i2c_block_data_mock):
+		self.bus.read_i2c_block_data = read_i2c_block_data_mock
+
+		read_i2c_block_data_mock.return_value = [0x80, 0x00]
+		adc_value = self.adc.readChannel(7)
+		self.assertEqual(adc_value, -32768)
+
+		read_i2c_block_data_mock.return_value = [0x7F, 0xFF]
+		adc_value = self.adc.readChannel(7)
+		self.assertEqual(adc_value, 32767)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
