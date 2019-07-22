@@ -3,7 +3,7 @@ from unittest.mock import patch
 from unittest import mock
 
 import smbus2
-
+from gpiozero import LED
 
 from raspberrypi import interfaces
 from raspberrypi import enums
@@ -11,8 +11,8 @@ from raspberrypi import enums
 class AnalogInputModuleTest(TestCase):
 
 	@patch('smbus2.SMBus')
-	def setUp(self, SMBusMock):
-		self.bus = SMBusMock	
+	def setUp(self, busMock):
+		self.bus = busMock	
 		self.adc = interfaces.ADC(self.bus)
 	
 	def test_readChannel_configures_channel_0_for_reading(self):
@@ -82,7 +82,23 @@ class AnalogInputModuleTest(TestCase):
 		self.assertEqual(adc_value, 32767)
 
 
+@patch('gpiozero.LED')
+class DigitalOutputModuleTest(TestCase):
 
+	def setUp(self):
+		self.gpio = interfaces.DO()	
+	
+	def test_turns_relay_0_off(self, ledMock):
+		self.gpio.off(0)
+
+		ledMock.assert_called_with(0)
+		ledMock.on.assert_called
+	def test_turns_channel_0_on(self, ledMock):
+		self.gpio.on(0)
+
+		ledMock.assert_called_with(0)
+		ledMock.off.assert_called
+		
 
 
 

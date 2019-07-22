@@ -1,11 +1,10 @@
 import time
 import smbus2
+import gpiozero
 
 from . import enums
 
 class ADC:
-	bus = None
-	
 	def __init__(self, i2c_bus):
 		self.bus = i2c_bus
 	
@@ -37,3 +36,10 @@ class ADC:
         		adc_value -= 65536
 
 		return adc_value
+
+class DO:
+	def off(self, channel):
+		gpiozero.LED(channel).off()
+
+	def on(self, channel):
+		gpiozero.LED(channel).on()
