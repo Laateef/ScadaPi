@@ -5,9 +5,12 @@ import gpiozero
 from . import enums
 
 class ADC:
-	def __init__(self, i2c_bus):
-		self.bus = i2c_bus
+	def __init__(self):
+		self.bus = smbus2.SMBus(1)
 	
+	def __del__(self):
+		self.bus.close()
+
 	def readChannel(self, channel):
 		if 0 > channel or channel > 7:
 			raise IndexError('The channel must be between 0 and 7')
