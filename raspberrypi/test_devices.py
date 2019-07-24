@@ -59,3 +59,21 @@ class HeaterModuleTest(TestCase):
 		self.assertEqual(gpioMock.on.call_args_list, [call(enums.HEATER_PIN_1), call(enums.HEATER_PIN_2)])
 		self.assertEqual(gpioMock.on.call_count, 2)
 
+
+@patch('raspberrypi.devices.interfaces.DO', autospec=True)
+class ValveModuleTest(TestCase):
+	
+	def test_opens_valve_1(self, gpioMock):
+		devices.Valve.open(1)
+
+		gpioMock.off.assert_called_once_with(enums.VALVE_1_PIN)
+
+	def test_closes_valve_5(self, gpioMock):
+		devices.Valve.close(5)
+
+		gpioMock.on.assert_called_once_with(enums.VALVE_5_PIN)
+
+	def test_raises_exception_if_valve_no_is_out_of_scope(self, gpioMock):
+		self.assertRaises(IndexError, devices.Valve.open, 0)
+		self.assertRaises(IndexError, devices.Valve.close, 6)
+

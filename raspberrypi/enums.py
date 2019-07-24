@@ -32,3 +32,9 @@ TOTAL_CHANNEL_COUNT        = 8
 
 HEATER_PIN_1 		   = 16
 HEATER_PIN_2 		   = 18
+
+VALVE_1_PIN                = 15
+VALVE_2_PIN                = 17
+VALVE_3_PIN                = 19
+VALVE_4_PIN                = 21
+VALVE_5_PIN                = 23

@@ -55,3 +55,17 @@ class Heater:
 	def stop():
 		interfaces.DO.on(enums.HEATER_PIN_1)
 		interfaces.DO.on(enums.HEATER_PIN_2)
+
+class Valve:
+	def _check_valve_no(no):
+		if no < 1 or no > 5:
+			raise IndexError
+	def open(no):
+		Valve._check_valve_no(no)
+		interfaces.DO.off(enums.VALVE_1_PIN)
+
+	def close(no):
+		Valve._check_valve_no(no)
+		interfaces.DO.on(enums.VALVE_5_PIN)
+
+
