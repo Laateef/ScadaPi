@@ -15,13 +15,13 @@ class ADC:
 		if 0 > channel or channel > 7:
 			raise IndexError('The channel must be between 0 and 7')
 
-		self.bus.write_i2c_block_data(enums.ADC_I2C_ADDRESS_1 + channel // enums.CHANNEL_COUNT, 
+		self.bus.write_i2c_block_data(enums.ADC_I2C_ADDRESS_1 + channel // enums.MODULE_CHANNEL_COUNT, 
 			enums.ADC_REG_CONFIGURATION, 
-			[enums.AIN_CMN_CFG_HByte | (enums.ADC_CFG_MUX_AIN_0 + ( (channel % enums.CHANNEL_COUNT) << enums.ADC_CFG_MUX_OFFSET ) ), enums.AIN_CMN_CFG_LByte])
+			[enums.AIN_CMN_CFG_HByte | (enums.ADC_CFG_MUX_AIN_0 + ( (channel % enums.MODULE_CHANNEL_COUNT) << enums.ADC_CFG_MUX_OFFSET ) ), enums.AIN_CMN_CFG_LByte])
 
 		time.sleep(1.0 / enums.ADC_SAMPLE_PER_SECOND + 0.001)
 
-		data_bytes = self.bus.read_i2c_block_data(enums.ADC_I2C_ADDRESS_1 + channel // enums.CHANNEL_COUNT, enums.ADC_REG_CONVERSION, 2)
+		data_bytes = self.bus.read_i2c_block_data(enums.ADC_I2C_ADDRESS_1 + channel // enums.MODULE_CHANNEL_COUNT, enums.ADC_REG_CONVERSION, 2)
  
 
 		# Note that ADS1115's conversion register contains the result in binary tow's complement format.
