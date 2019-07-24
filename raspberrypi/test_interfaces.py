@@ -88,13 +88,13 @@ class AnalogInputModuleTest(TestCase):
 class DigitalOutputModuleTest(TestCase):
 	
 	def test_turns_channel_0_off(self, gpioMock):
-		interfaces.DO().off(0)
+		interfaces.DO.off(0)
 
 		gpioMock.assert_called_once_with(0)
 		gpioMock.return_value.off.assert_called_once()
 		
 	def test_turns_channel_0_on(self, gpioMock):
-		interfaces.DO().on(0)
+		interfaces.DO.on(0)
 
 		gpioMock.assert_called_once_with(0)
 		gpioMock.return_value.on.assert_called_once()

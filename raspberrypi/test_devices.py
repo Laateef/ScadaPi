@@ -50,14 +50,12 @@ class HeaterModuleTest(TestCase):
 	def test_starts_heater(self, gpioMock):
 		devices.Heater.start()
 
-		gpioMock.assert_called_once()
-		self.assertEqual(gpioMock.return_value.off.call_args_list, [call(enums.HEATER_PIN_1), call(enums.HEATER_PIN_2)])
-		self.assertEqual(gpioMock.return_value.off.call_count, 2)
+		self.assertEqual(gpioMock.off.call_args_list, [call(enums.HEATER_PIN_1), call(enums.HEATER_PIN_2)])
+		self.assertEqual(gpioMock.off.call_count, 2)
 
 	def test_stops_heater(self, gpioMock):
 		devices.Heater.stop()
 
-		gpioMock.assert_called_once()
-		self.assertEqual(gpioMock.return_value.on.call_args_list, [call(enums.HEATER_PIN_1), call(enums.HEATER_PIN_2)])
-		self.assertEqual(gpioMock.return_value.on.call_count, 2)
+		self.assertEqual(gpioMock.on.call_args_list, [call(enums.HEATER_PIN_1), call(enums.HEATER_PIN_2)])
+		self.assertEqual(gpioMock.on.call_count, 2)
 

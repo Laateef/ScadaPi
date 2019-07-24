@@ -41,8 +41,10 @@ class ADC:
 		return adc_value
 
 class DO:
-	def off(self, channel):
+	@staticmethod
+	def off(channel):
 		gpiozero.LED(channel).off()
 
-	def on(self, channel):
+	@staticmethod
+	def on(channel):
 		gpiozero.LED(channel).on()

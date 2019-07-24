@@ -3,7 +3,7 @@ from raspberrypi import enums
 
 import math
 
-class Thermistor():
+class Thermistor:
 	def adc_to_voltage(adc_value):
 		return enums.ADC_SCALE_LSB_SIZE_IN_VOLT * adc_value
 
@@ -45,14 +45,13 @@ class Thermistor():
 
 		return ary
 
-# The relay board is active low i.e., the relay is active when pin is low.
+
+# The relay board is active low i.e., the relay is active when its control pin is low.
 class Heater:
 	def start():
-		gpio = interfaces.DO()
-		gpio.off(enums.HEATER_PIN_1)
-		gpio.off(enums.HEATER_PIN_2)
+		interfaces.DO.off(enums.HEATER_PIN_1)
+		interfaces.DO.off(enums.HEATER_PIN_2)
 
 	def stop():
-		gpio = interfaces.DO()
-		gpio.on(enums.HEATER_PIN_1)
-		gpio.on(enums.HEATER_PIN_2)
+		interfaces.DO.on(enums.HEATER_PIN_1)
+		interfaces.DO.on(enums.HEATER_PIN_2)
