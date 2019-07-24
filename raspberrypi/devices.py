@@ -44,3 +44,15 @@ class Thermistor():
 			ary.insert(ch, Thermistor.adc_to_temperature(adc.readChannel(ch)))
 
 		return ary
+
+# The relay board is active low i.e., the relay is active when pin is low.
+class Heater:
+	def start():
+		gpio = interfaces.DO()
+		gpio.off(enums.HEATER_PIN_1)
+		gpio.off(enums.HEATER_PIN_2)
+
+	def stop():
+		gpio = interfaces.DO()
+		gpio.on(enums.HEATER_PIN_1)
+		gpio.on(enums.HEATER_PIN_2)

@@ -44,3 +44,20 @@ class ThermistorModuleTest(TestCase):
 		self.assertEqual(adcMock.return_value.readChannel.call_count, enums.TOTAL_CHANNEL_COUNT)
 		self.assertEqual(adcMock.return_value.readChannel.call_args_list, [call(0), call(1), call(2), call(3), call(4), call(5), call(6), call(7)])
 	
+@patch('raspberrypi.devices.interfaces.DO', autospec=True)
+class HeaterModuleTest(TestCase):
+	
+	def test_starts_heater(self, gpioMock):
+		devices.Heater.start()
+
+		gpioMock.assert_called_once()
+		self.assertEqual(gpioMock.return_value.off.call_args_list, [call(enums.HEATER_PIN_1), call(enums.HEATER_PIN_2)])
+		self.assertEqual(gpioMock.return_value.off.call_count, 2)
+
+	def test_stops_heater(self, gpioMock):
+		devices.Heater.stop()
+
+		gpioMock.assert_called_once()
+		self.assertEqual(gpioMock.return_value.on.call_args_list, [call(enums.HEATER_PIN_1), call(enums.HEATER_PIN_2)])
+		self.assertEqual(gpioMock.return_value.on.call_count, 2)
+
