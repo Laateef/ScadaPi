@@ -40,11 +40,22 @@ class ADC:
 
 		return adc_value
 
+
+# The relay board is active low i.e., the relay is active when its control pin is low.
 class DO:
 	@staticmethod
 	def off(channel):
-		gpiozero.LED(channel).off()
+		gpiozero.OutputDevice(channel, active_high=False).off()
 
 	@staticmethod
 	def on(channel):
-		gpiozero.LED(channel).on()
+		gpiozero.OutputDevice(channel, active_high=False).on()
+
+	@staticmethod
+	def state(channel):
+		return gpiozero.OutputDevice(channel, active_high=False).value
+
+	@staticmethod
+	def toggle(channel):
+		gpiozero.OutputDevice(channel, active_high=False).toggle()
+

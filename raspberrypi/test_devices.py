@@ -50,14 +50,14 @@ class HeaterModuleTest(TestCase):
 	def test_starts_heater(self, gpioMock):
 		devices.Heater.start()
 
-		self.assertEqual(gpioMock.off.call_args_list, [call(enums.HEATER_PIN_1), call(enums.HEATER_PIN_2)])
-		self.assertEqual(gpioMock.off.call_count, 2)
+		self.assertEqual(gpioMock.on.call_args_list, [call(enums.HEATER_PIN_1), call(enums.HEATER_PIN_2)])
+		self.assertEqual(gpioMock.on.call_count, 2)
 
 	def test_stops_heater(self, gpioMock):
 		devices.Heater.stop()
 
-		self.assertEqual(gpioMock.on.call_args_list, [call(enums.HEATER_PIN_1), call(enums.HEATER_PIN_2)])
-		self.assertEqual(gpioMock.on.call_count, 2)
+		self.assertEqual(gpioMock.off.call_args_list, [call(enums.HEATER_PIN_1), call(enums.HEATER_PIN_2)])
+		self.assertEqual(gpioMock.off.call_count, 2)
 
 
 @patch('raspberrypi.devices.interfaces.DO', autospec=True)
@@ -66,22 +66,22 @@ class ValveModuleTest(TestCase):
 	def test_opens_valve_1(self, gpioMock):
 		devices.Valve.open(1)
 
-		gpioMock.off.assert_called_once_with(enums.VALVE_PIN_MAP[1])
+		gpioMock.on.assert_called_once_with(enums.VALVE_PIN_MAP[1])
 
 	def test_opens_valve_5(self, gpioMock):
 		devices.Valve.open(5)
 
-		gpioMock.off.assert_called_once_with(enums.VALVE_PIN_MAP[5])
+		gpioMock.on.assert_called_once_with(enums.VALVE_PIN_MAP[5])
 
 	def test_closes_valve_1(self, gpioMock):
 		devices.Valve.close(1)
 
-		gpioMock.on.assert_called_once_with(enums.VALVE_PIN_MAP[1])
+		gpioMock.off.assert_called_once_with(enums.VALVE_PIN_MAP[1])
 
 	def test_closes_valve_5(self, gpioMock):
 		devices.Valve.close(5)
 
-		gpioMock.on.assert_called_once_with(enums.VALVE_PIN_MAP[5])
+		gpioMock.off.assert_called_once_with(enums.VALVE_PIN_MAP[5])
 
 	def test_raises_exception_if_valve_no_is_out_of_scope(self, gpioMock):
 		self.assertRaises(IndexError, devices.Valve.open, 0)
@@ -93,17 +93,17 @@ class PumpModuleTest(TestCase):
 	
 	def test_starts_pump_1(self, gpioMock):
 		devices.Pump.start(1)
-		gpioMock.off.assert_called_once_with(enums.PUMP_PIN_MAP[1])
+		gpioMock.on.assert_called_once_with(enums.PUMP_PIN_MAP[1])
 
 	def test_starts_pump_3(self, gpioMock):
 		devices.Pump.start(3)
-		gpioMock.off.assert_called_once_with(enums.PUMP_PIN_MAP[3])
+		gpioMock.on.assert_called_once_with(enums.PUMP_PIN_MAP[3])
 
 	def test_stops_pump_1(self, gpioMock):
 		devices.Pump.stop(1)
-		gpioMock.on.assert_called_once_with(enums.PUMP_PIN_MAP[1])
+		gpioMock.off.assert_called_once_with(enums.PUMP_PIN_MAP[1])
 
 	def test_stops_pump_3(self, gpioMock):
 		devices.Pump.stop(3)
-		gpioMock.on.assert_called_once_with(enums.PUMP_PIN_MAP[3])
+		gpioMock.off.assert_called_once_with(enums.PUMP_PIN_MAP[3])
 

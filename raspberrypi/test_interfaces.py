@@ -84,18 +84,49 @@ class AnalogInputModuleTest(TestCase):
 		self.assertEqual(adc_value, 32767)
 
 
-@patch('raspberrypi.interfaces.gpiozero.LED', autospec=True)
+@patch('raspberrypi.interfaces.gpiozero.OutputDevice', autospec=True)
 class DigitalOutputModuleTest(TestCase):
 	
 	def test_turns_channel_0_off(self, gpioMock):
 		interfaces.DO.off(0)
 
-		gpioMock.assert_called_once_with(0)
+		gpioMock.assert_called_once_with(0, active_high=False)
+		gpioMock.return_value.off.assert_called_once()
+
+	def test_turns_channel_7_off(self, gpioMock):
+		interfaces.DO.off(7)
+
+		gpioMock.assert_called_once_with(7, active_high=False)
 		gpioMock.return_value.off.assert_called_once()
 		
 	def test_turns_channel_0_on(self, gpioMock):
 		interfaces.DO.on(0)
 
-		gpioMock.assert_called_once_with(0)
+		gpioMock.assert_called_once_with(0, active_high=False)
 		gpioMock.return_value.on.assert_called_once()
+
+	def test_turns_channel_7_on(self, gpioMock):
+		interfaces.DO.on(7)
+
+		gpioMock.assert_called_once_with(7, active_high=False)
+		gpioMock.return_value.on.assert_called_once()
+		
+	def test_returns_state_of_channel_5(self, gpioMock):
+		gpioMock.return_value.value = False
+
+		self.assertEqual(interfaces.DO.state(5), False)
+
+		gpioMock.assert_called_once_with(5, active_high=False)
+
+	def test_toggles_the_output_of_channel_2(self, gpioMock):
+		gpioMock.return_value.value = False
+		self.assertEqual(interfaces.DO.state(2), False)
+
+		interfaces.DO.toggle(2)
+
+		gpioMock.return_value.value = True
+		self.assertEqual(interfaces.DO.state(2), True)
+		self.assertEqual(gpioMock.call_count, 3)
+		gpioMock.assert_called_with(2, active_high=False)
+		gpioMock.return_value.toggle.assert_called_once()
 		

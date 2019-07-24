@@ -45,16 +45,14 @@ class Thermistor:
 
 		return ary
 
-
-# The relay board is active low i.e., the relay is active when its control pin is low.
 class Heater:
 	def start():
-		interfaces.DO.off(enums.HEATER_PIN_1)
-		interfaces.DO.off(enums.HEATER_PIN_2)
-
-	def stop():
 		interfaces.DO.on(enums.HEATER_PIN_1)
 		interfaces.DO.on(enums.HEATER_PIN_2)
+
+	def stop():
+		interfaces.DO.off(enums.HEATER_PIN_1)
+		interfaces.DO.off(enums.HEATER_PIN_2)
 
 class Valve:
 	def _check_valve_no(no):
@@ -63,11 +61,11 @@ class Valve:
 
 	def open(no):
 		Valve._check_valve_no(no)
-		interfaces.DO.off(enums.VALVE_PIN_MAP[no])
+		interfaces.DO.on(enums.VALVE_PIN_MAP[no])
 
 	def close(no):
 		Valve._check_valve_no(no)
-		interfaces.DO.on(enums.VALVE_PIN_MAP[no])
+		interfaces.DO.off(enums.VALVE_PIN_MAP[no])
 
 
 class Pump:
@@ -77,10 +75,10 @@ class Pump:
 
 	def start(no):
 		Pump._check_pump_no(no)
-		interfaces.DO.off(enums.PUMP_PIN_MAP[no])
+		interfaces.DO.on(enums.PUMP_PIN_MAP[no])
 
 	def stop(no):
 		Pump._check_pump_no(no)
-		interfaces.DO.on(enums.PUMP_PIN_MAP[no])
+		interfaces.DO.off(enums.PUMP_PIN_MAP[no])
 
 
