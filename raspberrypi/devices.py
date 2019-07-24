@@ -58,14 +58,29 @@ class Heater:
 
 class Valve:
 	def _check_valve_no(no):
-		if no < 1 or no > 5:
+		if no not in enums.VALVE_PIN_MAP.keys():
 			raise IndexError
+
 	def open(no):
 		Valve._check_valve_no(no)
-		interfaces.DO.off(enums.VALVE_1_PIN)
+		interfaces.DO.off(enums.VALVE_PIN_MAP[no])
 
 	def close(no):
 		Valve._check_valve_no(no)
-		interfaces.DO.on(enums.VALVE_5_PIN)
+		interfaces.DO.on(enums.VALVE_PIN_MAP[no])
+
+
+class Pump:
+	def _check_pump_no(no):
+		if no not in enums.PUMP_PIN_MAP.keys():
+			raise IndexError
+
+	def start(no):
+		Pump._check_pump_no(no)
+		interfaces.DO.off(enums.PUMP_PIN_MAP[no])
+
+	def stop(no):
+		Pump._check_pump_no(no)
+		interfaces.DO.on(enums.PUMP_PIN_MAP[no])
 
 

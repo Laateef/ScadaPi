@@ -99,22 +99,3 @@ class DigitalOutputModuleTest(TestCase):
 		gpioMock.assert_called_once_with(0)
 		gpioMock.return_value.on.assert_called_once()
 		
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
