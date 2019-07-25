@@ -8,34 +8,22 @@ class Thermistor:
 		return enums.ADC_SCALE_LSB_SIZE_IN_VOLT * adc_value
 
 	def voltage_to_resistance(voltage_value):
-		# Source Voltage: 3.3(v)
-		v_src = 3.3	
-	
-		# Reference Resistance: 10000(ohm)
-		r_ref = 10000
-
 		# To make higher voltage refers to higher temperature we inverse the voltage against the source
-		voltage_value = v_src - voltage_value
+		voltage_value = enums.ADC_SOURCE_VOLTAGE - voltage_value
 
-		return r_ref * ( voltage_value / (v_src - voltage_value) )
+		return enums.ADC_REFERENCE_RESISTANCE * ( voltage_value / (enums.ADC_SOURCE_VOLTAGE - voltage_value) )
 
 	def resistance_to_temperature(resistance_value):
-		# Thermistor Nominal Resistance at 25(c): 10000(ohm)
-		th_r25 = 10000
-
-		# Thermistor Temperature Coefficient: 3980
-		th_beta = 3980
-
-		# Kelvin Conversion Constant	
-		k_const = 273.15 	
-
-		return (1.0 / ( ( math.log(resistance_value / th_r25) / th_beta ) + ( 1.0 / (25 + k_const) ) ) ) - k_const
+		return (1.0 / ( ( math.log(resistance_value / enums.NTC_NOMINAL_RESISTANCE) / enums.NTC_TEMPERATURE_COEFFICIENT ) + ( 1.0 / (enums.NTC_STANDARD_TEMPERATURE + enums.KELVIN_CONVERSION_CONSTANT) ) ) ) - enums.KELVIN_CONVERSION_CONSTANT
 
 	def adc_to_temperature(adc_value):
 		return Thermistor.resistance_to_temperature(Thermistor.voltage_to_resistance(Thermistor.adc_to_voltage(adc_value)))
 	
 	def temperature(channel):
-		return Thermistor.adc_to_temperature(interfaces.ADC().readChannel(channel))
+		if channel < 1 or channel > 8:
+			raise IndexError
+
+		return Thermistor.adc_to_temperature(interfaces.ADC().readChannel(channel - 1))
 	
 	def temperatureArray():
 		ary = []
@@ -45,40 +33,38 @@ class Thermistor:
 
 		return ary
 
-class Heater:
-	def start():
-		interfaces.DO.on(enums.HEATER_PIN_1)
-		interfaces.DO.on(enums.HEATER_PIN_2)
 
-	def stop():
-		interfaces.DO.off(enums.HEATER_PIN_1)
-		interfaces.DO.off(enums.HEATER_PIN_2)
+class GenericDevice:
+	def __init__(self, device_pin_map, device_no):
+		self.device_pin_map = device_pin_map
+		self.device_no = device_no
 
-class Valve:
-	def _check_valve_no(no):
-		if no not in enums.VALVE_PIN_MAP.keys():
+		if self.device_no not in self.device_pin_map:
 			raise IndexError
 
-	def open(no):
-		Valve._check_valve_no(no)
-		interfaces.DO.on(enums.VALVE_PIN_MAP[no])
+	def on(self):
+		interfaces.DO.on(self.device_pin_map[self.device_no])
 
-	def close(no):
-		Valve._check_valve_no(no)
-		interfaces.DO.off(enums.VALVE_PIN_MAP[no])
+	def off(self):
+		interfaces.DO.off(self.device_pin_map[self.device_no])
 
+	def state(self):
+		return interfaces.DO.state(self.device_pin_map[self.device_no])
 
-class Pump:
-	def _check_pump_no(no):
-		if no not in enums.PUMP_PIN_MAP.keys():
-			raise IndexError
-
-	def start(no):
-		Pump._check_pump_no(no)
-		interfaces.DO.on(enums.PUMP_PIN_MAP[no])
-
-	def stop(no):
-		Pump._check_pump_no(no)
-		interfaces.DO.off(enums.PUMP_PIN_MAP[no])
+	def toggle(self):
+		interfaces.DO.toggle(self.device_pin_map[self.device_no])
 
 
+class Heater(GenericDevice):
+	def __init__(self, device_no):
+		super().__init__(enums.HEATER_PIN_MAP, device_no)
+
+
+class Valve(GenericDevice):
+	def __init__(self, device_no):
+		super().__init__(enums.VALVE_PIN_MAP, device_no)
+
+
+class Pump(GenericDevice):
+	def __init__(self, device_no):
+		super().__init__(enums.PUMP_PIN_MAP, device_no)

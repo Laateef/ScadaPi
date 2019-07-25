@@ -87,46 +87,46 @@ class AnalogInputModuleTest(TestCase):
 @patch('raspberrypi.interfaces.gpiozero.OutputDevice', autospec=True)
 class DigitalOutputModuleTest(TestCase):
 	
-	def test_turns_channel_0_off(self, gpioMock):
+	def test_turns_channel_0_off(self, pinMock):
 		interfaces.DO.off(0)
 
-		gpioMock.assert_called_once_with(0, active_high=False)
-		gpioMock.return_value.off.assert_called_once()
+		pinMock.assert_called_once_with(0, active_high=False)
+		pinMock.return_value.off.assert_called_once()
 
-	def test_turns_channel_7_off(self, gpioMock):
+	def test_turns_channel_7_off(self, pinMock):
 		interfaces.DO.off(7)
 
-		gpioMock.assert_called_once_with(7, active_high=False)
-		gpioMock.return_value.off.assert_called_once()
+		pinMock.assert_called_once_with(7, active_high=False)
+		pinMock.return_value.off.assert_called_once()
 		
-	def test_turns_channel_0_on(self, gpioMock):
+	def test_turns_channel_0_on(self, pinMock):
 		interfaces.DO.on(0)
 
-		gpioMock.assert_called_once_with(0, active_high=False)
-		gpioMock.return_value.on.assert_called_once()
+		pinMock.assert_called_once_with(0, active_high=False)
+		pinMock.return_value.on.assert_called_once()
 
-	def test_turns_channel_7_on(self, gpioMock):
+	def test_turns_channel_7_on(self, pinMock):
 		interfaces.DO.on(7)
 
-		gpioMock.assert_called_once_with(7, active_high=False)
-		gpioMock.return_value.on.assert_called_once()
+		pinMock.assert_called_once_with(7, active_high=False)
+		pinMock.return_value.on.assert_called_once()
 		
-	def test_returns_state_of_channel_5(self, gpioMock):
-		gpioMock.return_value.value = False
+	def test_returns_state_of_channel_5(self, pinMock):
+		pinMock.return_value.value = False
 
 		self.assertEqual(interfaces.DO.state(5), False)
 
-		gpioMock.assert_called_once_with(5, active_high=False)
+		pinMock.assert_called_once_with(5, active_high=False)
 
-	def test_toggles_the_output_of_channel_2(self, gpioMock):
-		gpioMock.return_value.value = False
+	def test_toggles_the_output_of_channel_2(self, pinMock):
+		pinMock.return_value.value = False
 		self.assertEqual(interfaces.DO.state(2), False)
 
 		interfaces.DO.toggle(2)
 
-		gpioMock.return_value.value = True
+		pinMock.return_value.value = True
 		self.assertEqual(interfaces.DO.state(2), True)
-		self.assertEqual(gpioMock.call_count, 3)
-		gpioMock.assert_called_with(2, active_high=False)
-		gpioMock.return_value.toggle.assert_called_once()
+		self.assertEqual(pinMock.call_count, 3)
+		pinMock.assert_called_with(2, active_high=False)
+		pinMock.return_value.toggle.assert_called_once()
 		

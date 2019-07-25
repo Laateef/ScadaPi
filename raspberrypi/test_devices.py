@@ -22,17 +22,22 @@ class ThermistorModuleTest(TestCase):
 		self.assertAlmostEqual(devices.Thermistor.resistance_to_temperature(10000), 25)
 
 	@patch('raspberrypi.devices.interfaces.ADC', autospec=True)
-	def test_returns_thermistor_temperature_for_channel_0(self, adcMock):
+	def test_returns_thermistor_1_temperature(self, adcMock):
 		adcMock.readChannel.return_value = 16384
 
-		temperature_value = devices.Thermistor.temperature(0)
+		temperature_value = devices.Thermistor.temperature(1)
 
 		self.assertAlmostEqual(temperature_value, 25)
 		adcMock.assert_called_once()
 		adcMock.return_value.readChannel.assert_called_once_with(0)
 
 	@patch('raspberrypi.devices.interfaces.ADC', autospec=True)
-	def test_returns_thermistor_temperature_array_for_all_channels(self, adcMock):
+	def test_raises_exception_if_channel_no_is_out_of_scope(self, adcMock):
+		self.assertRaises(IndexError, devices.Thermistor.temperature, 0)
+		self.assertRaises(IndexError, devices.Thermistor.temperature, 9)
+
+	@patch('raspberrypi.devices.interfaces.ADC', autospec=True)
+	def test_returns_thermistor_temperature_array(self, adcMock):
 		adcMock.return_value.readChannel.side_effect = iter([10798, 11100, 12306, 13200, 17522, 23627, 24665, 16350])
 
 		temperature_array = devices.Thermistor.temperatureArray()
@@ -47,63 +52,60 @@ class ThermistorModuleTest(TestCase):
 @patch('raspberrypi.devices.interfaces.DO', autospec=True)
 class HeaterModuleTest(TestCase):
 	
-	def test_starts_heater(self, gpioMock):
-		devices.Heater.start()
+	def test_starts_heater(self, pinMock):
+		devices.Heater(1).on()
 
-		self.assertEqual(gpioMock.on.call_args_list, [call(enums.HEATER_PIN_1), call(enums.HEATER_PIN_2)])
-		self.assertEqual(gpioMock.on.call_count, 2)
+		pinMock.on.assert_called_once_with(enums.HEATER_PIN_MAP[1])
 
-	def test_stops_heater(self, gpioMock):
-		devices.Heater.stop()
+	def test_stops_heater(self, pinMock):
+		devices.Heater(2).off()
 
-		self.assertEqual(gpioMock.off.call_args_list, [call(enums.HEATER_PIN_1), call(enums.HEATER_PIN_2)])
-		self.assertEqual(gpioMock.off.call_count, 2)
+		pinMock.off.assert_called_once_with(enums.HEATER_PIN_MAP[2])
 
+	def test_returns_heater_state(self, pinMock):
+		pinMock.state.return_value = False
+		self.assertEqual(devices.Heater(1).state(), False)
+		pinMock.state.assert_called_once_with(enums.HEATER_PIN_MAP[1])
+
+		pinMock.reset_mock()
+
+		pinMock.state.return_value = True
+		self.assertEqual(devices.Heater(2).state(), True)
+		pinMock.state.assert_called_once_with(enums.HEATER_PIN_MAP[2])
+
+	def test_toggles_heater(self, pinMock):
+		pinMock.state.return_value = False
+		self.assertEqual(devices.Heater(2).state(), False)
+
+		devices.Heater(2).toggle()
+
+		pinMock.state.return_value = True
+		self.assertEqual(devices.Heater(2).state(), True)
+		pinMock.toggle.assert_called_once()
+
+	def test_raises_exception_if_device_no_is_out_of_scope(self, pinMock):
+		self.assertRaises(IndexError, devices.Heater, 0)
+		self.assertRaises(IndexError, devices.Heater, 3)
 
 @patch('raspberrypi.devices.interfaces.DO', autospec=True)
 class ValveModuleTest(TestCase):
+	def test_turns_valve_1_on(self, pinMock):
+		devices.Valve(1).on()
+
+		pinMock.on.assert_called_once_with(enums.VALVE_PIN_MAP[1])
+
+	def test_raises_exception_if_valve_no_is_out_of_scope(self, pinMock):
+		self.assertRaises(IndexError, devices.Valve, 0)
+		self.assertRaises(IndexError, devices.Valve, 6)
 	
-	def test_opens_valve_1(self, gpioMock):
-		devices.Valve.open(1)
-
-		gpioMock.on.assert_called_once_with(enums.VALVE_PIN_MAP[1])
-
-	def test_opens_valve_5(self, gpioMock):
-		devices.Valve.open(5)
-
-		gpioMock.on.assert_called_once_with(enums.VALVE_PIN_MAP[5])
-
-	def test_closes_valve_1(self, gpioMock):
-		devices.Valve.close(1)
-
-		gpioMock.off.assert_called_once_with(enums.VALVE_PIN_MAP[1])
-
-	def test_closes_valve_5(self, gpioMock):
-		devices.Valve.close(5)
-
-		gpioMock.off.assert_called_once_with(enums.VALVE_PIN_MAP[5])
-
-	def test_raises_exception_if_valve_no_is_out_of_scope(self, gpioMock):
-		self.assertRaises(IndexError, devices.Valve.open, 0)
-		self.assertRaises(IndexError, devices.Valve.close, 6)
-
-
 @patch('raspberrypi.devices.interfaces.DO', autospec=True)
 class PumpModuleTest(TestCase):
-	
-	def test_starts_pump_1(self, gpioMock):
-		devices.Pump.start(1)
-		gpioMock.on.assert_called_once_with(enums.PUMP_PIN_MAP[1])
+	def test_turns_Pump_1_on(self, pinMock):
+		devices.Pump(1).on()
 
-	def test_starts_pump_3(self, gpioMock):
-		devices.Pump.start(3)
-		gpioMock.on.assert_called_once_with(enums.PUMP_PIN_MAP[3])
+		pinMock.on.assert_called_once_with(enums.PUMP_PIN_MAP[1])
 
-	def test_stops_pump_1(self, gpioMock):
-		devices.Pump.stop(1)
-		gpioMock.off.assert_called_once_with(enums.PUMP_PIN_MAP[1])
-
-	def test_stops_pump_3(self, gpioMock):
-		devices.Pump.stop(3)
-		gpioMock.off.assert_called_once_with(enums.PUMP_PIN_MAP[3])
+	def test_raises_exception_if_valve_no_is_out_of_scope(self, pinMock):
+		self.assertRaises(IndexError, devices.Pump, 0)
+		self.assertRaises(IndexError, devices.Pump, 4)
 

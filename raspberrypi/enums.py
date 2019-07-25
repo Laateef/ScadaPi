@@ -29,10 +29,19 @@ AIN_CMN_CFG_LByte 		= ADC_CFG_DR | ADC_CFG_COMP_QUE
 
 MODULE_CHANNEL_COUNT		= 4
 TOTAL_CHANNEL_COUNT		= 8
+		
+ADC_SOURCE_VOLTAGE		= 3.3 	 # Source Voltage: 3.3(v)		
+ADC_REFERENCE_RESISTANCE	= 10000  # Reference Resistance: 10000(ohm)
 
-HEATER_PIN_1			= 16
-HEATER_PIN_2			= 18
+NTC_STANDARD_TEMPERATURE	= 25 	 # Thermistor Standard Temperature: 25(c) 
+NTC_NOMINAL_RESISTANCE		= 10000  # Thermistor Nominal Resistance at Standard Temperature: 10000(ohm) at 25(c)
+NTC_TEMPERATURE_COEFFICIENT	= 3980 	 # Thermistor Temperature Coefficient(beta)
+
+KELVIN_CONVERSION_CONSTANT	= 273.15 # Kelvin Conversion Constant
+
+HEATER_PIN_MAP			= {1:16, 2:18}
 
 VALVE_PIN_MAP			= {1:15, 2:17, 3:19, 4:21, 5:23}
 
 PUMP_PIN_MAP			= {1:27, 2:29, 3:31}
+
