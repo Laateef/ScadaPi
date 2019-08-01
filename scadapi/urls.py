@@ -17,7 +17,11 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from mainapp import views
+from mainapp import api
 
 urlpatterns = [
-    url(r'^$', views.main_page, name='main_page'),
+    url(r'^$', views.main_page),
+    url(r'^api/thermistor/$', api.thermistor_view),
+    url(r'^api/thermistor/(\d+)/$', api.thermistor_view),
+
 ]
