@@ -24,4 +24,8 @@ urlpatterns = [
     url(r'^api/thermistor/$', api.thermistor_view),
     url(r'^api/thermistor/(\d+)/$', api.thermistor_view),
 
+    url(r'^api/(\w+)/$', api.multiple_generic_device_state_view),
+    url(r'^api/(\w+)/(\d+)/$', api.single_generic_device_state_view),
+
+    url(r'^api/(\w+)/(\d+)/(\w+)/$', api.single_generic_device_actuation_view),
 ]

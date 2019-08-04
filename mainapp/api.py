@@ -1,17 +1,27 @@
 from django.http import HttpResponse
 
-import json
-
-from raspberrypi import enums
 from raspberrypi import devices
 
-def thermistor_view(request, device_id=None):
-	temperature_array = []
+from mainapp import util
 
-	if device_id:
-		temperature_array.append(devices.Thermistor.temperature(int(device_id)))
-	else:
-		temperature_array = devices.Thermistor.temperatureArray()
+def thermistor_view(request, thermistor_id=None):
+	return HttpResponse(util.thermistor_state_as_json(thermistor_id) if thermistor_id else util.thermistor_state_list_as_json(), content_type='application/json')
 
-	return HttpResponse(json.dumps([{ 'id': idx + 1, 'temperature': float(temperature_array[idx]) } for idx in range(len(temperature_array))]), content_type='application/json')
+def single_generic_device_state_view(request, device_type, device_id):
+	return HttpResponse(util.generic_device_state_as_json(device_type, device_id), content_type='application/json')
 
+
+def multiple_generic_device_state_view(request, device_type):
+	return HttpResponse(util.generic_devices_state_list_as_json(device_type), content_type='application/json')
+
+
+def single_generic_device_actuation_view(request, device_type, device_id, device_op):
+	device_no = int(device_id)
+
+	device = util.device_class(device_type)(device_no)
+
+	if device_op == 'toggle': device.toggle()
+	elif device_op == 'on':	device.on()
+	elif device_op == 'off': device.off()
+
+	return HttpResponse()
