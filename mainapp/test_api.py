@@ -165,4 +165,44 @@ class ValveDeviceApiTest(TestCase):
 										{'id': 2, 'state': 1}, 
 										{'id': 3, 'state': 0} ])
 
+@patch('mainapp.api.devices.Thermistor', autospec=True)
+@patch('mainapp.api.devices.Heater', autospec=True)
+@patch('mainapp.api.devices.Valve', autospec=True)
+@patch('mainapp.api.devices.Pump', autospec=True)
+class AllDevicesApiTest(TestCase):
+	
+	def test_get_returns_all_devices_state_list_as_json_200(self, pumpMock, valveMock, heaterMock, thermistorMock):
+		thermistorMock.temperatureArray.return_value = [25.1, 26.2, 27.3, 28.4, 29.5, 30.6, 31.7, 32.8]
+		heaterMock.return_value.state.side_effect = iter([1, 0])
+		valveMock.return_value.state.side_effect = iter([1, 1, 0, 1, 1])
+		pumpMock.return_value.state.side_effect = iter([1, 1, 0])
+
+		response = self.client.get('/api/')
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response['content-type'], 'application/json')
+		self.assertEqual(json.loads(response.content.decode('utf8')), [
+			{ 'thermistor': [ 
+				{'id': 1, 'temperature': 25.1},
+				{'id': 2, 'temperature': 26.2},
+				{'id': 3, 'temperature': 27.3},
+				{'id': 4, 'temperature': 28.4},
+				{'id': 5, 'temperature': 29.5},
+				{'id': 6, 'temperature': 30.6},
+				{'id': 7, 'temperature': 31.7},  
+				{'id': 8, 'temperature': 32.8} ] },
+			{ 'heater': [ 
+				{'id': 1, 'state': 1}, 
+				{'id': 2, 'state': 0} ] },
+			{ 'valve': [ 
+				{'id': 1, 'state': 1}, 
+				{'id': 2, 'state': 1}, 
+				{'id': 3, 'state': 0}, 
+				{'id': 4, 'state': 1}, 
+				{'id': 5, 'state': 1} ] },
+			{ 'pump': [ 
+				{'id': 1, 'state': 1}, 
+				{'id': 2, 'state': 1}, 
+				{'id': 3, 'state': 0} ] }
+		])
+
 

@@ -4,6 +4,8 @@ from raspberrypi import devices
 
 from mainapp import util
 
+import json
+
 def thermistor_view(request, thermistor_id=None):
 	return HttpResponse(util.thermistor_state_as_json(thermistor_id) if thermistor_id else util.thermistor_state_list_as_json(), content_type='application/json')
 
@@ -25,3 +27,11 @@ def single_generic_device_actuation_view(request, device_type, device_id, device
 	elif device_op == 'off': device.off()
 
 	return HttpResponse()
+
+def all_devices_state_list_view(request):
+	return HttpResponse(json.dumps([{ 'thermistor': json.loads(util.thermistor_state_list_as_json()) },
+					{ 'heater': json.loads(util.generic_devices_state_list_as_json('heater')) },
+					{ 'valve': json.loads(util.generic_devices_state_list_as_json('valve')) },
+					{ 'pump': json.loads(util.generic_devices_state_list_as_json('pump')) } ]), content_type='application/json')
+
+

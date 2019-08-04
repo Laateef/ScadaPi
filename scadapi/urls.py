@@ -28,4 +28,6 @@ urlpatterns = [
     url(r'^api/(\w+)/(\d+)/$', api.single_generic_device_state_view),
 
     url(r'^api/(\w+)/(\d+)/(\w+)/$', api.single_generic_device_actuation_view),
+
+	url(r'^api/$', api.all_devices_state_list_view),
 ]
