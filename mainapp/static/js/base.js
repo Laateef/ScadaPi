@@ -27,5 +27,16 @@ var base = {
 			}
 		});
 	},
+	populate_pump_array: function() {
+		$.ajax({
+			url: '/api/pump/',
+			method: 'GET',
+			success: function(response) {
+				for (var i = 0; i < response.length; ++i) {
+					document.getElementById('p' + response[i].id).innerHTML = response[i].state;
+				}
+			}
+		});
+	},
 
 };

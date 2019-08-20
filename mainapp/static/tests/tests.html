@@ -89,6 +89,22 @@
 				assert.equal(document.getElementById('h' + i).innerHTML, responseData[i - 1].state);
 		});
 
+		QUnit.test("fetch and set pump device state by ajax", function(assert){
+			var responseData = [
+				{'id': 1, 'state': 1}, 
+				{'id': 2, 'state': 1}, 
+				{'id': 3, 'state': 0}
+			];
+			server.respondWith('GET', '/api/pump/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
+			
+			base.populate_pump_array();
+
+			server.respond();
+			
+			for(var i = 1; i <= responseData.length; ++i)
+				assert.equal(document.getElementById('p' + i).innerHTML, responseData[i - 1].state);
+		});
+
 	</script>
 
 </body>
