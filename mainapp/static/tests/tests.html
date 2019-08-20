@@ -10,9 +10,6 @@
 <body>
 	<div id="qunit"></div>
 	<div id="qunit-fixture">
-		<button id="h1" class="heater">Heater 1</button>
-		<button id="p3" class="pump">Pump 3</button>
-		<button id="v5" class="valve">Valve 5</button>
 		<span id="t1" class="thermistor">Thermistor 1</span>
 		<span id="t2" class="thermistor">Thermistor 2</span>
 		<span id="t3" class="thermistor">Thermistor 3</span>
@@ -21,6 +18,16 @@
 		<span id="t6" class="thermistor">Thermistor 6</span>
 		<span id="t7" class="thermistor">Thermistor 7</span>
 		<span id="t8" class="thermistor">Thermistor 8</span>
+		<button id="v1" class="valve">Valve 1</button>
+		<button id="v2" class="valve">Valve 2</button>
+		<button id="v3" class="valve">Valve 3</button>
+		<button id="v4" class="valve">Valve 4</button>
+		<button id="v5" class="valve">Valve 5</button>
+		<button id="p1" class="pump">Pump 1</button>
+		<button id="p2" class="pump">Pump 2</button>
+		<button id="p3" class="pump">Pump 3</button>
+		<button id="h1" class="heater">Heater 1</button>
+		<button id="h2" class="heater">Heater 2</button>
 	</div>
 
 	<script src="../js/jquery-3.4.1.min.js"></script>
@@ -63,9 +70,25 @@
 
 			server.respond();
 			
-			for(var i = 1; i <= 8; ++i)
+			for(var i = 1; i <= responseData.length; ++i)
 				assert.equal(document.getElementById('t' + i).innerHTML, responseData[i - 1].temperature);
 		});
+
+		QUnit.test("fetch and set heater device state by ajax", function(assert){
+			var responseData = [
+				{'id': 1, 'state': 1},
+				{'id': 2, 'state': 0}
+			];
+			server.respondWith('GET', '/api/heater/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
+			
+			base.populate_heater_array();
+
+			server.respond();
+			
+			for(var i = 1; i <= responseData.length; ++i)
+				assert.equal(document.getElementById('h' + i).innerHTML, responseData[i - 1].state);
+		});
+
 	</script>
 
 </body>
