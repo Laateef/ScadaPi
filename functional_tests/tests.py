@@ -5,7 +5,7 @@ from django.test import TestCase
 
 import time
 
-MAX_WAIT = 10
+MAX_WAIT = 3
 
 def wait(fn):
 	def modified_fn(*args, **kargs):
@@ -40,3 +40,6 @@ class MainPageTest(TestCase):
 		self.assertEqual(len(self.browser.find_elements_by_css_selector('.valve')), 5)
 		self.assertEqual(len(self.browser.find_elements_by_css_selector('.pump')), 3)
 		self.assertEqual(len(self.browser.find_elements_by_css_selector('.heater')), 1)
+
+
+

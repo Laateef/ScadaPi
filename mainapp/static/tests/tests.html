@@ -45,6 +45,27 @@
 			assert.equal(base.get_device_type(document.getElementById('p3')), 'pump');
 			assert.equal(base.get_device_type(document.getElementById('t8')), 'thermistor');
 		});
+
+		QUnit.test("populate thermistor boxes with temperature values by ajax", function(assert){
+			var responseData = [
+				{'id': 1, 'temperature': 25.1},
+				{'id': 2, 'temperature': 26.2},
+				{'id': 3, 'temperature': 27.3},
+				{'id': 4, 'temperature': 28.4},
+				{'id': 5, 'temperature': 29.5},
+				{'id': 6, 'temperature': 30.6},
+				{'id': 7, 'temperature': 31.7},  
+				{'id': 8, 'temperature': 32.8}
+			];
+			server.respondWith('GET', '/api/thermistor/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
+			
+			base.populate_thermistor_array();
+
+			server.respond();
+			
+			for(var i = 1; i <= 8; ++i)
+				assert.equal(document.getElementById('t' + i).innerHTML, responseData[i - 1].temperature);
+		});
 	</script>
 
 </body>
