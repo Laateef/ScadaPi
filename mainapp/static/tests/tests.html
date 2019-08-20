@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content"width=device-width">
+	<title>Javascript Tests</title>
+	<link rel="stylesheet" href="qunit-2.9.2.css">
+</head>
+
+<body>
+	<div id="qunit"></div>
+	<div id="qunit-fixture">
+		<button id="h1" class="heater">Heater 1</button>
+		<button id="p3" class="pump">Pump 3</button>
+		<button id="v5" class="valve">Valve 5</button>
+		<span id="t1" class="thermistor">Thermistor 1</span>
+		<span id="t2" class="thermistor">Thermistor 2</span>
+		<span id="t3" class="thermistor">Thermistor 3</span>
+		<span id="t4" class="thermistor">Thermistor 4</span>
+		<span id="t5" class="thermistor">Thermistor 5</span>
+		<span id="t6" class="thermistor">Thermistor 6</span>
+		<span id="t7" class="thermistor">Thermistor 7</span>
+		<span id="t8" class="thermistor">Thermistor 8</span>
+	</div>
+
+	<script src="../js/jquery-3.4.1.min.js"></script>
+	<script src="../js/base.js"></script>
+	<script src="qunit-2.9.2.js"></script>
+	<script src="sinon-7.4.1.js"></script>
+
+	<script>
+		var server;
+
+		QUnit.testStart(function(){ server = sinon.fakeServer.create(); });
+
+		QUnit.testDone(function(){ server.restore(); });
+
+		QUnit.test("get device no from device element's id", function(assert){
+			assert.equal(base.get_device_no(document.getElementById('t8')), 8);
+		});
+
+		QUnit.test("get device type from device element's id", function(assert){
+			assert.equal(base.get_device_type(document.getElementById('h1')), 'heater');
+			assert.equal(base.get_device_type(document.getElementById('v5')), 'valve');
+			assert.equal(base.get_device_type(document.getElementById('p3')), 'pump');
+			assert.equal(base.get_device_type(document.getElementById('t8')), 'thermistor');
+		});
+	</script>
+
+</body>
+</html>
