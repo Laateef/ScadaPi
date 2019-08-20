@@ -105,6 +105,23 @@
 				assert.equal(document.getElementById('p' + i).innerHTML, responseData[i - 1].state);
 		});
 
+		QUnit.test("fetch and set valve device state by ajax", function(assert){
+			var responseData = [
+				{'id': 1, 'state': 1}, 
+				{'id': 2, 'state': 1}, 
+				{'id': 3, 'state': 0}, 
+				{'id': 4, 'state': 1}, 
+				{'id': 5, 'state': 1}
+			];
+			server.respondWith('GET', '/api/valve/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
+			
+			base.populate_valve_array();
+
+			server.respond();
+			
+			for(var i = 1; i <= responseData.length; ++i)
+				assert.equal(document.getElementById('v' + i).innerHTML, responseData[i - 1].state);
+		});
 	</script>
 
 </body>

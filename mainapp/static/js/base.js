@@ -38,5 +38,16 @@ var base = {
 			}
 		});
 	},
+	populate_valve_array: function() {
+		$.ajax({
+			url: '/api/valve/',
+			method: 'GET',
+			success: function(response) {
+				for (var i = 0; i < response.length; ++i) {
+					document.getElementById('v' + response[i].id).innerHTML = response[i].state;
+				}
+			}
+		});
+	},
 
 };
