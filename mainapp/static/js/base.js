@@ -36,5 +36,10 @@ var base = {
 	populate_valve_array: function() {
 		this.populate_generic_device_array('valve');
 	},
-
+	toggle_device: function(device_btn_elm) {
+		$.ajax({
+			url: '/api/' + this.get_device_type(device_btn_elm) + '/' + this.get_device_no(device_btn_elm) + '/toggle/', 
+			method: 'PATCH'
+		});
+	},
 };

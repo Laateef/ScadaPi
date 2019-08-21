@@ -35,7 +35,9 @@
 				base.populate_heater_array();
 				base.populate_pump_array();
 				base.populate_valve_array();
-				}, 1000);
+			}, 1000);
+			
+			$('.heater, .pump, .valve').click(function(){ base.toggle_device(this); } );
 		});
 		</script>
 	</body>

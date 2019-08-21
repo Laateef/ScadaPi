@@ -122,6 +122,30 @@
 			for(var i = 1; i <= responseData.length; ++i)
 				assert.equal(document.getElementById('v' + i).innerHTML, responseData[i - 1].state);
 		});
+
+		QUnit.test("toggle heater device state by ajax", function(assert){
+			base.toggle_device(document.getElementById('h1'));
+
+			assert.equal(server.requests.length, 1);
+			assert.equal(server.requests[0].url, '/api/heater/1/toggle/');
+			assert.equal(server.requests[0].method, 'PATCH');
+		});
+
+		QUnit.test("toggle pump device state by ajax", function(assert){
+			base.toggle_device(document.getElementById('p3'));
+
+			assert.equal(server.requests.length, 1);
+			assert.equal(server.requests[0].url, '/api/pump/3/toggle/');
+			assert.equal(server.requests[0].method, 'PATCH');
+		});
+
+		QUnit.test("toggle valve device state by ajax", function(assert){
+			base.toggle_device(document.getElementById('v5'));
+
+			assert.equal(server.requests.length, 1);
+			assert.equal(server.requests[0].url, '/api/valve/5/toggle/');
+			assert.equal(server.requests[0].method, 'PATCH');
+		});
 	</script>
 
 </body>
