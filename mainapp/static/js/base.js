@@ -42,4 +42,23 @@ var base = {
 			method: 'PATCH'
 		});
 	},
+	adjust_main_switch: function() {
+		$.ajax({
+			url: '/api/automation/', 
+			method: 'GET',
+			success: function(response) {
+				if (response[0].state)
+					document.getElementById('main_switch').innerHTML = 'Stop';
+				else
+					document.getElementById('main_switch').innerHTML = 'Start';
+			}
+		});
+
+	},
+	toggle_automation: function() {
+		$.ajax({
+			url: '/api/automation/toggle/', 
+			method: 'PATCH'
+		});
+	},
 };

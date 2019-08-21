@@ -10,6 +10,8 @@
 <body>
 	<div id="qunit"></div>
 	<div id="qunit-fixture">
+		<button id="main_switch">Start</button>
+
 		<span id="t1" class="thermistor">Thermistor 1</span>
 		<span id="t2" class="thermistor">Thermistor 2</span>
 		<span id="t3" class="thermistor">Thermistor 3</span>
@@ -145,6 +147,39 @@
 			assert.equal(server.requests.length, 1);
 			assert.equal(server.requests[0].url, '/api/valve/5/toggle/');
 			assert.equal(server.requests[0].method, 'PATCH');
+		});
+
+		QUnit.test("toggle automation by ajax", function(assert){
+			base.toggle_automation();
+
+			assert.equal(server.requests.length, 1);
+			assert.equal(server.requests[0].url, '/api/automation/toggle/');
+			assert.equal(server.requests[0].method, 'PATCH');
+		});
+
+		QUnit.test("adjust main switch by ajax", function(assert){
+			startStopButton = document.getElementById('main_switch')
+			assert.equal(startStopButton.innerHTML, "Start")
+
+			var responseData = [{'state': 1}];
+
+			server.respondWith('GET', '/api/automation/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
+			
+			base.adjust_main_switch();
+
+			server.respond();
+
+			assert.equal(startStopButton.innerHTML, "Stop")
+
+			responseData = [{'state': 0}];
+
+			server.respondWith('GET', '/api/automation/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
+
+			base.adjust_main_switch();
+
+			server.respond();
+
+			assert.equal(startStopButton.innerHTML, "Start")
 		});
 	</script>
 

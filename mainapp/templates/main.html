@@ -4,6 +4,8 @@
 		<title>ScadaPi</title>
 	</head>
 	<body>
+		<button id="main_switch" style="position: absolute; top: 50px; left: 100px">Start</button>
+
 		<button id="h1" class="heater" style="position: absolute; top: 100px; left: 100px">Heater 1</button>
 		<button id="h2" class="heater" style="position: absolute; top: 150px; left: 100px">Heater 2</button>
 
@@ -35,9 +37,11 @@
 				base.populate_heater_array();
 				base.populate_pump_array();
 				base.populate_valve_array();
+				base.adjust_main_switch();
 			}, 1000);
 			
 			$('.heater, .pump, .valve').click(function(){ base.toggle_device(this); } );
+			$('#main_switch').click(base.toggle_automation);
 		});
 		</script>
 	</body>

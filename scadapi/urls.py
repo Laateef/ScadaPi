@@ -23,6 +23,9 @@ from mainapp import api
 
 urlpatterns = [
     url(r'^$', views.main_page),
+    url(r'^api/automation/$', api.automation_view),
+    url(r'^api/automation/(\w+)/$', api.automation_view),
+
     url(r'^api/thermistor/$', api.thermistor_view),
     url(r'^api/thermistor/(\d+)/$', api.thermistor_view),
 

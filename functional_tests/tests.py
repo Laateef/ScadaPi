@@ -39,7 +39,6 @@ class MainPageTest(TestCase):
 		self.assertEqual(len(self.browser.find_elements_by_css_selector('.thermistor')), 8)
 		self.assertEqual(len(self.browser.find_elements_by_css_selector('.valve')), 5)
 		self.assertEqual(len(self.browser.find_elements_by_css_selector('.pump')), 3)
-		self.assertEqual(len(self.browser.find_elements_by_css_selector('.heater')), 1)
-
+		self.assertEqual(len(self.browser.find_elements_by_css_selector('.heater')), 2)
 
 

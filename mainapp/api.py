@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 
 from raspberrypi import devices
+from raspberrypi import automation
 
 from mainapp import util
 
@@ -34,4 +35,12 @@ def all_devices_state_list_view(request):
 					{ 'valve': json.loads(util.generic_devices_state_list_as_json('valve')) },
 					{ 'pump': json.loads(util.generic_devices_state_list_as_json('pump')) } ]), content_type='application/json')
 
+def automation_view(request, operation=None):
+	if operation:
+		if operation == 'start': automation.start()
+		elif operation == 'stop': automation.stop()
+		elif operation == 'toggle': automation.toggle()		
+		return HttpResponse()
+
+	return HttpResponse(json.dumps([{ 'state': automation.running }]), content_type='application/json')
 

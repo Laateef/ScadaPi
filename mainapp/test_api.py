@@ -5,6 +5,8 @@ from unittest.mock import call
 
 import json
 
+from raspberrypi import automation
+
 @patch('mainapp.api.devices.Thermistor', autospec=True)
 class ThermistorApiTest(TestCase):
 	base_url = '/api/thermistor/'
@@ -205,4 +207,26 @@ class AllDevicesApiTest(TestCase):
 				{'id': 3, 'state': 0} ] }
 		])
 
+
+class AutomationTest(TestCase):
+	def test_automation_is_off_initially(self):
+		response = self.client.get('/api/automation/')
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response['content-type'], 'application/json')
+		self.assertEqual(json.loads(response.content.decode('utf8')), [ {'state': 0} ])
+
+	@patch('raspberrypi.automation.start', autospec=True)
+	def test_start_automation(self, automationStartMock):
+		response = self.client.put('/api/automation/start/')
+		self.assertEqual(automationStartMock.call_count, 1)
+
+	@patch('raspberrypi.automation.stop', autospec=True)
+	def test_start_automation(self, automationStopMock):
+		response = self.client.put('/api/automation/stop/')
+		self.assertEqual(automationStopMock.call_count, 1)
+
+	@patch('raspberrypi.automation.toggle', autospec=True)
+	def test_start_automation(self, automationToggleMock):
+		response = self.client.put('/api/automation/toggle/')
+		self.assertEqual(automationToggleMock.call_count, 1)
 
