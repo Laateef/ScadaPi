@@ -39,38 +39,16 @@ class Thermistor:
 
 		return ary
 
-
-class GenericDevice:
-	def __init__(self, device_pin_map, device_no):
-		self.device_pin_map = device_pin_map
-		self.device_no = device_no
-
-		if self.device_no not in self.device_pin_map:
-			raise IndexError
-
-	def on(self):
-		interfaces.DO.on(self.device_pin_map[self.device_no])
-
-	def off(self):
-		interfaces.DO.off(self.device_pin_map[self.device_no])
-
-	def state(self):
-		return interfaces.DO.state(self.device_pin_map[self.device_no])
-
-	def toggle(self):
-		interfaces.DO.toggle(self.device_pin_map[self.device_no])
-
-
-class Heater(GenericDevice):
+class Heater(interfaces.GenericDevice):
 	def __init__(self, device_no):
 		super().__init__(enums.HEATER_PIN_MAP, device_no)
 
 
-class Valve(GenericDevice):
+class Valve(interfaces.GenericDevice):
 	def __init__(self, device_no):
 		super().__init__(enums.VALVE_PIN_MAP, device_no)
 
 
-class Pump(GenericDevice):
+class Pump(interfaces.GenericDevice):
 	def __init__(self, device_no):
 		super().__init__(enums.PUMP_PIN_MAP, device_no)

@@ -88,45 +88,47 @@ class AnalogInputModuleTest(TestCase):
 class DigitalOutputModuleTest(TestCase):
 	
 	def test_turns_channel_0_off(self, pinMock):
-		interfaces.DO.off(0)
+		interfaces.GenericDevice({0:9}, 0).off()
 
-		pinMock.assert_called_once_with(0, active_high=False)
+		pinMock.assert_called_once_with(9, active_high=False)
 		pinMock.return_value.off.assert_called_once()
 
 	def test_turns_channel_7_off(self, pinMock):
-		interfaces.DO.off(7)
+		interfaces.GenericDevice({7:9}, 7).off()
 
-		pinMock.assert_called_once_with(7, active_high=False)
+		pinMock.assert_called_once_with(9, active_high=False)
 		pinMock.return_value.off.assert_called_once()
 		
 	def test_turns_channel_0_on(self, pinMock):
-		interfaces.DO.on(0)
+		interfaces.GenericDevice({0:9}, 0).on()
 
-		pinMock.assert_called_once_with(0, active_high=False)
+		pinMock.assert_called_once_with(9, active_high=False)
 		pinMock.return_value.on.assert_called_once()
 
 	def test_turns_channel_7_on(self, pinMock):
-		interfaces.DO.on(7)
+		interfaces.GenericDevice({7:9}, 7).on()
 
-		pinMock.assert_called_once_with(7, active_high=False)
+		pinMock.assert_called_once_with(9, active_high=False)
 		pinMock.return_value.on.assert_called_once()
 		
 	def test_returns_state_of_channel_5(self, pinMock):
 		pinMock.return_value.value = False
 
-		self.assertEqual(interfaces.DO.state(5), False)
+		self.assertEqual(interfaces.GenericDevice({5:9}, 5).state(), False)
 
-		pinMock.assert_called_once_with(5, active_high=False)
+		pinMock.assert_called_once_with(9, active_high=False)
 
 	def test_toggles_the_output_of_channel_2(self, pinMock):
 		pinMock.return_value.value = False
-		self.assertEqual(interfaces.DO.state(2), False)
+		device = interfaces.GenericDevice({2:9}, 2)
 
-		interfaces.DO.toggle(2)
+		self.assertEqual(device.state(), False)
+
+		device.toggle()
 
 		pinMock.return_value.value = True
-		self.assertEqual(interfaces.DO.state(2), True)
-		self.assertEqual(pinMock.call_count, 3)
-		pinMock.assert_called_with(2, active_high=False)
+		self.assertEqual(device.state(), True)
+		self.assertEqual(pinMock.call_count, 1)
+		pinMock.assert_called_with(9, active_high=False)
 		pinMock.return_value.toggle.assert_called_once()
 		

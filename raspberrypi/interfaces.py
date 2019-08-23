@@ -2,7 +2,7 @@ import time
 import smbus2
 import gpiozero
 
-from . import enums
+from raspberrypi import enums
 
 class ADC:
 	def __init__(self):
@@ -42,20 +42,22 @@ class ADC:
 
 
 # The relay board is active low i.e., the relay is active when its control pin is low.
-class DO:
-	@staticmethod
-	def off(pin):
-		gpiozero.OutputDevice(pin, active_high=False).off()
+class GenericDevice:
+	def __init__(self, device_pin_map, device_no):
+		if device_no not in device_pin_map:
+			raise IndexError
 
-	@staticmethod
-	def on(pin):
-		gpiozero.OutputDevice(pin, active_high=False).on()
+		self.device = gpiozero.OutputDevice(device_pin_map[device_no], active_high=False)
+		
+	def on(self):
+		self.device.on()
 
-	@staticmethod
-	def state(pin):
-		return gpiozero.OutputDevice(pin, active_high=False).value
+	def off(self):
+		self.device.off()
 
-	@staticmethod
-	def toggle(pin):
-		gpiozero.OutputDevice(pin, active_high=False).toggle()
+	def state(self):
+		return self.device.value
+
+	def toggle(self):
+		self.device.toggle()
 
