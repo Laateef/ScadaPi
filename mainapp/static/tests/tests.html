@@ -10,6 +10,8 @@
 <body>
 	<div id="qunit"></div>
 	<div id="qunit-fixture">
+		<input name="csrfmiddleware" value="0123456789">
+
 		<button id="main_switch">Start</button>
 
 		<span id="t1" class="thermistor">Thermistor 1</span>
@@ -130,7 +132,7 @@
 
 			assert.equal(server.requests.length, 1);
 			assert.equal(server.requests[0].url, '/api/heater/1/toggle/');
-			assert.equal(server.requests[0].method, 'PATCH');
+			assert.equal(server.requests[0].method, 'POST');
 		});
 
 		QUnit.test("toggle pump device state by ajax", function(assert){
@@ -138,7 +140,7 @@
 
 			assert.equal(server.requests.length, 1);
 			assert.equal(server.requests[0].url, '/api/pump/3/toggle/');
-			assert.equal(server.requests[0].method, 'PATCH');
+			assert.equal(server.requests[0].method, 'POST');
 		});
 
 		QUnit.test("toggle valve device state by ajax", function(assert){
@@ -146,7 +148,7 @@
 
 			assert.equal(server.requests.length, 1);
 			assert.equal(server.requests[0].url, '/api/valve/5/toggle/');
-			assert.equal(server.requests[0].method, 'PATCH');
+			assert.equal(server.requests[0].method, 'POST');
 		});
 
 		QUnit.test("toggle automation by ajax", function(assert){
@@ -154,7 +156,7 @@
 
 			assert.equal(server.requests.length, 1);
 			assert.equal(server.requests[0].url, '/api/automation/toggle/');
-			assert.equal(server.requests[0].method, 'PATCH');
+			assert.equal(server.requests[0].method, 'POST');
 		});
 
 		QUnit.test("adjust main switch by ajax", function(assert){

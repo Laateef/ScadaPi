@@ -4,6 +4,8 @@
 		<title>ScadaPi</title>
 	</head>
 	<body>
+		{% csrf_token %}
+
 		<button id="main_switch" style="position: absolute; top: 50px; left: 100px">Start</button>
 
 		<button id="h1" class="heater" style="position: absolute; top: 100px; left: 100px">Heater 1</button>
