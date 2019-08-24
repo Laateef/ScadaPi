@@ -87,48 +87,56 @@ class AnalogInputModuleTest(TestCase):
 @patch('raspberrypi.interfaces.gpiozero.OutputDevice', autospec=True)
 class DigitalOutputModuleTest(TestCase):
 	
-	def test_turns_channel_0_off(self, pinMock):
+	def test_closes_device_when_deleted(self, deviceMock):
+		dev = interfaces.GenericDevice({0:9}, 0)
+
+		dev.__del__()
+
+		deviceMock.return_value.close.assert_called_once()
+
+	def test_turns_channel_0_off(self, deviceMock):
 		interfaces.GenericDevice({0:9}, 0).off()
 
-		pinMock.assert_called_once_with(9, active_high=False)
-		pinMock.return_value.off.assert_called_once()
+		deviceMock.assert_called_once_with(9, active_high=False)
+		deviceMock.return_value.off.assert_called_once()
 
-	def test_turns_channel_7_off(self, pinMock):
+	def test_turns_channel_7_off(self, deviceMock):
 		interfaces.GenericDevice({7:9}, 7).off()
 
-		pinMock.assert_called_once_with(9, active_high=False)
-		pinMock.return_value.off.assert_called_once()
+		deviceMock.assert_called_once_with(9, active_high=False)
+		deviceMock.return_value.off.assert_called_once()
 		
-	def test_turns_channel_0_on(self, pinMock):
+	def test_turns_channel_0_on(self, deviceMock):
 		interfaces.GenericDevice({0:9}, 0).on()
 
-		pinMock.assert_called_once_with(9, active_high=False)
-		pinMock.return_value.on.assert_called_once()
+		deviceMock.assert_called_once_with(9, active_high=False)
+		deviceMock.return_value.on.assert_called_once()
 
-	def test_turns_channel_7_on(self, pinMock):
+	def test_turns_channel_7_on(self, deviceMock):
 		interfaces.GenericDevice({7:9}, 7).on()
 
-		pinMock.assert_called_once_with(9, active_high=False)
-		pinMock.return_value.on.assert_called_once()
+		deviceMock.assert_called_once_with(9, active_high=False)
+		deviceMock.return_value.on.assert_called_once()
 		
-	def test_returns_state_of_channel_5(self, pinMock):
-		pinMock.return_value.value = False
+	def test_returns_state_of_channel_5(self, deviceMock):
+		deviceMock.return_value.value = False
 
 		self.assertEqual(interfaces.GenericDevice({5:9}, 5).state(), False)
 
-		pinMock.assert_called_once_with(9, active_high=False)
+		deviceMock.assert_called_once_with(9, active_high=False)
 
-	def test_toggles_the_output_of_channel_2(self, pinMock):
-		pinMock.return_value.value = False
-		device = interfaces.GenericDevice({2:9}, 2)
+	def test_toggles_the_output_of_channel_2(self, deviceMock):
+		deviceMock.return_value.value = False
 
-		self.assertEqual(device.state(), False)
+		dev = interfaces.GenericDevice({2:9}, 2)
 
-		device.toggle()
+		self.assertEqual(dev.state(), False)
 
-		pinMock.return_value.value = True
-		self.assertEqual(device.state(), True)
-		self.assertEqual(pinMock.call_count, 1)
-		pinMock.assert_called_with(9, active_high=False)
-		pinMock.return_value.toggle.assert_called_once()
+		dev.toggle()
+
+		deviceMock.return_value.value = True
+		self.assertEqual(dev.state(), True)
+		self.assertEqual(deviceMock.call_count, 1)
+		deviceMock.assert_called_with(9, active_high=False)
+		deviceMock.return_value.toggle.assert_called_once()
 		

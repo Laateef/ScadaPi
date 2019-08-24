@@ -49,6 +49,10 @@ class GenericDevice:
 
 		self.device = gpiozero.OutputDevice(device_pin_map[device_no], active_high=False)
 		
+	def __del__(self):
+		if hasattr(self, 'device'):
+			self.device.close()
+
 	def on(self):
 		self.device.on()
 

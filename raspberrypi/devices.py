@@ -43,7 +43,6 @@ class Heater(interfaces.GenericDevice):
 	def __init__(self, device_no):
 		super().__init__(enums.HEATER_PIN_MAP, device_no)
 
-
 class Valve(interfaces.GenericDevice):
 	def __init__(self, device_no):
 		super().__init__(enums.VALVE_PIN_MAP, device_no)
