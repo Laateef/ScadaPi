@@ -1,8 +1,6 @@
 from django.http import HttpResponse
 
 from raspberrypi import devices
-from raspberrypi import automation
-
 from mainapp import util
 
 import json
@@ -19,9 +17,9 @@ def multiple_generic_device_state_view(request, device_type):
 
 
 def single_generic_device_actuation_view(request, device_type, device_id, device_op):
-	device_no = int(device_id)
+	from raspberrypi import automation
 
-	device = util.device_class(device_type)(device_no)
+	device = automation.device_map[device_type + '_' + device_id]
 
 	if device_op == 'toggle': device.toggle()
 	elif device_op == 'on':	device.on()
@@ -36,6 +34,8 @@ def all_devices_state_list_view(request):
 					{ 'pump': json.loads(util.generic_devices_state_list_as_json('pump')) } ]), content_type='application/json')
 
 def automation_view(request, operation=None):
+	from raspberrypi import automation
+
 	if operation:
 		if operation == 'start': automation.start()
 		elif operation == 'stop': automation.stop()

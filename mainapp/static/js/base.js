@@ -40,7 +40,7 @@ var base = {
 		$.ajax({
 			url: '/api/' + this.get_device_type(device_btn_elm) + '/' + this.get_device_no(device_btn_elm) + '/toggle/', 
 			method: 'POST',
-			data: { csrfmiddleware: document.getElementsByName('csrfmiddleware')[0].getAttribute('value') } 
+			data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].getAttribute('value') } 
 		});
 	},
 	adjust_main_switch: function() {
@@ -60,7 +60,7 @@ var base = {
 		$.ajax({
 			url: '/api/automation/toggle/', 
 			method: 'POST',
-			data: { csrfmiddleware: document.getElementsByName('csrfmiddleware')[0].getAttribute('value') } 
+			data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].getAttribute('value') } 
 		});
 	},
 };

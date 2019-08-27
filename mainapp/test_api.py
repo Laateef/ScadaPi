@@ -1,15 +1,19 @@
 from django.test import TestCase
 
+from raspberrypi import devices
+
+from mainapp import util
+
 from unittest.mock import patch
 from unittest.mock import call
+from unittest.mock import Mock
 
 import json
-
-from raspberrypi import automation
 
 @patch('mainapp.api.devices.Thermistor', autospec=True)
 class ThermistorApiTest(TestCase):
 	base_url = '/api/thermistor/'
+
 	def test_get_returns_json_200(self, thermistorMock):
 		response = self.client.get(self.base_url)
 		self.assertEqual(response.status_code, 200)
@@ -37,147 +41,186 @@ class ThermistorApiTest(TestCase):
 
 		response = self.client.get(self.base_url)
 
-		self.assertEqual(json.loads(response.content.decode('utf8')), [ {'id': 1, 'temperature': 25.1},
-										{'id': 2, 'temperature': 26.2},
-										{'id': 3, 'temperature': 27.3},
-										{'id': 4, 'temperature': 28.4},
-										{'id': 5, 'temperature': 29.5},
-										{'id': 6, 'temperature': 30.6},
-										{'id': 7, 'temperature': 31.7}, 
-										{'id': 8, 'temperature': 32.8} ])
+		self.assertEqual(json.loads(response.content.decode('utf8')), [ 
+							{'id': 1, 'temperature': 25.1},
+							{'id': 2, 'temperature': 26.2},
+							{'id': 3, 'temperature': 27.3},
+							{'id': 4, 'temperature': 28.4},
+							{'id': 5, 'temperature': 29.5},
+							{'id': 6, 'temperature': 30.6},
+							{'id': 7, 'temperature': 31.7}, 
+							{'id': 8, 'temperature': 32.8} 
+						])
 
 
-@patch('mainapp.api.devices.Heater', autospec=True)
+heaterMockList=[Mock(devices.Heater), Mock(devices.Heater)]
+
+pumpMockList=[Mock(devices.Pump), Mock(devices.Pump), Mock(devices.Pump)]
+
+valveMockList=[Mock(devices.Valve), Mock(devices.Valve), Mock(devices.Valve), Mock(devices.Valve), Mock(devices.Valve)]
+
+with patch('raspberrypi.devices.Heater', autospec=True, side_effect=heaterMockList) as heaterMock:
+	with patch('raspberrypi.devices.Pump', autospec=True, side_effect=pumpMockList) as pumpMock:
+		with patch('raspberrypi.devices.Valve', autospec=True, side_effect=valveMockList) as valveMock:
+			from raspberrypi import automation
+
+def reset_device_mock(device_type):
+		[automation.device_map[device_type + '_' + str(idx+1)].reset_mock() for idx in range(util.device_count(device_type))]
+
 class HeaterDeviceApiTest(TestCase):
 	base_url = '/api/heater/'
-	def test_get_returns_json_200(self, deviceMock):
+
+	def setUp(self):
+		reset_device_mock('heater')
+
+	def test_init_heaters(self):
+		self.assertEqual(heaterMockList[0], automation.device_map['heater_1'])
+		self.assertEqual(heaterMockList[1], automation.device_map['heater_2'])
+		self.assertEqual(heaterMock.call_args_list, [call(1), call(2)])
+
+	def test_get_returns_json_200(self):
 		response = self.client.get(self.base_url)
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(response['content-type'], 'application/json')
 
-	def test_get_returns_state_of_specific_heater(self, deviceMock):
-		deviceMock.return_value.state.return_value = 1
+	def test_get_returns_state_of_specific_heater(self):
+		heaterMockList[0].state.return_value = 1
 
 		response = self.client.get(self.base_url + '1/')
 
-		self.assertEqual(deviceMock.call_args_list, [call(1)])
-		self.assertTrue(deviceMock.return_value.state.called)
+		self.assertEqual(heaterMockList[0].state.call_count, 1)
 		self.assertEqual(json.loads(response.content.decode('utf8')), [ {'id': 1, 'state': 1} ])
 
-		deviceMock.reset_mock()
-
-		deviceMock.return_value.state.return_value = 0
+		heaterMockList[1].state.return_value = 0
 
 		response = self.client.get(self.base_url + '2/')
 
-		self.assertEqual(deviceMock.call_args_list, [call(2)])
-		self.assertTrue(deviceMock.return_value.state.called)
+		self.assertEqual(heaterMockList[1].state.call_count, 1)
 		self.assertEqual(json.loads(response.content.decode('utf8')), [ {'id': 2, 'state': 0} ])
 
-	def test_get_returns_heater_state_array(self, deviceMock):
-		deviceMock.return_value.state.side_effect = iter([1, 0])
+	def test_get_returns_heater_state_array(self):
+		heaterMockList[0].state.return_value = 1
+		heaterMockList[1].state.return_value = 0
 
 		response = self.client.get(self.base_url)
 
-		self.assertEqual(deviceMock.return_value.state.call_count, 2)
-		self.assertEqual(deviceMock.call_count, 2)
-		self.assertEqual(deviceMock.call_args_list, [call(1), call(2)])
+		self.assertEqual(heaterMockList[0].state.call_count, 1)
+		self.assertEqual(heaterMockList[1].state.call_count, 1)
+
 		self.assertEqual(json.loads(response.content.decode('utf8')), [ {'id': 1, 'state': 1}, {'id': 2, 'state': 0} ])
 
-	def test_put_toggles_specific_heater(self, deviceMock):
+	def test_put_toggles_specific_heater(self):
 		response = self.client.put(self.base_url + '1/toggle/')
-		deviceMock.assert_called_once_with(1)
-		self.assertTrue(deviceMock.return_value.toggle.called)
-		self.assertEqual(deviceMock.return_value.toggle.call_count, 1)
-		self.assertEqual(response.status_code, 200)
 
-		deviceMock.reset_mock()
+		self.assertEqual(heaterMockList[0].toggle.call_count, 1)
+		self.assertEqual(response.status_code, 200)
 
 		response = self.client.put('/api/heater/2/toggle/')
 
-		deviceMock.assert_called_once_with(2)
-		self.assertTrue(deviceMock.return_value.toggle.called)
-		self.assertEqual(deviceMock.return_value.toggle.call_count, 1)
+		self.assertEqual(heaterMockList[1].toggle.call_count, 1)
 		self.assertEqual(response.status_code, 200)
 
-	def test_put_turns_specific_heater_on(self, deviceMock):
+	def test_put_turns_specific_heater_on(self):
 		response = self.client.put('/api/heater/1/on/')
 
-		deviceMock.assert_called_once_with(1)
-		self.assertTrue(deviceMock.return_value.on.called)
-		self.assertEqual(deviceMock.return_value.on.call_count, 1)
+		self.assertEqual(heaterMockList[0].on.call_count, 1)
 		self.assertEqual(response.status_code, 200)
-
-		deviceMock.reset_mock()
 
 		response = self.client.put(self.base_url + '2/on/')
 
-		deviceMock.assert_called_once_with(2)
-		self.assertTrue(deviceMock.return_value.on.called)
-		self.assertEqual(deviceMock.return_value.on.call_count, 1)
+		self.assertEqual(heaterMockList[1].on.call_count, 1)
 		self.assertEqual(response.status_code, 200)
 
-	def test_put_turns_specific_heater_off(self, deviceMock):
+	def test_put_turns_specific_heater_off(self):
 		response = self.client.put(self.base_url + '1/off/')
 
-		self.assertEqual(deviceMock.call_args_list, [call(1)])
-		self.assertTrue(deviceMock.return_value.off.called)
-		self.assertEqual(deviceMock.return_value.off.call_count, 1)
+		self.assertEqual(heaterMockList[0].off.call_count, 1)
 		self.assertEqual(response.status_code, 200)
-
-		deviceMock.reset_mock()
 
 		response = self.client.put(self.base_url + '2/off/')
 
-		deviceMock.assert_called_once_with(2)
-		self.assertTrue(deviceMock.return_value.off.called)
-		self.assertEqual(deviceMock.return_value.off.call_count, 1)
+		self.assertEqual(heaterMockList[1].off.call_count, 1)
 		self.assertEqual(response.status_code, 200)
 
 
-@patch('mainapp.api.devices.Valve', autospec=True)
-class ValveDeviceApiTest(TestCase):
+class PumpDeviceApiTest(TestCase):
+	def setUp(self):
+		reset_device_mock('pump')
 
-	def test_get_returns_valve_state_array(self, deviceMock):
-		deviceMock.return_value.state.side_effect = iter([1, 1, 0, 1, 1])
+	def test_init_pumps(self):
+		self.assertEqual(pumpMockList[0], automation.device_map['pump_1'])
+		self.assertEqual(pumpMockList[1], automation.device_map['pump_2'])
+		self.assertEqual(pumpMockList[2], automation.device_map['pump_3'])
+		self.assertEqual(pumpMock.call_args_list, [call(1), call(2), call(3)])
 
-		response = self.client.get('/api/valve/')
-
-		self.assertEqual(deviceMock.return_value.state.call_count, 5)
-		self.assertEqual(deviceMock.call_count, 5)
-		self.assertEqual(deviceMock.call_args_list, [call(1), call(2), call(3), call(4), call(5)])
-		self.assertEqual(json.loads(response.content.decode('utf8')), [ {'id': 1, 'state': 1}, 
-										{'id': 2, 'state': 1}, 
-										{'id': 3, 'state': 0}, 
-										{'id': 4, 'state': 1}, 
-										{'id': 5, 'state': 1} ])
-
-@patch('mainapp.api.devices.Pump', autospec=True)
-class ValveDeviceApiTest(TestCase):
-
-	def test_get_returns_pump_state_array(self, deviceMock):
-		deviceMock.return_value.state.side_effect = iter([1, 1, 0])
+	def test_get_returns_pump_state_array(self):
+		pumpMockList[0].state.return_value = 1
+		pumpMockList[1].state.return_value = 1
+		pumpMockList[2].state.return_value = 0
 
 		response = self.client.get('/api/pump/')
 
-		self.assertEqual(deviceMock.return_value.state.call_count, 3)
-		self.assertEqual(deviceMock.call_count, 3)
-		self.assertEqual(deviceMock.call_args_list, [call(1), call(2), call(3)])
-		self.assertEqual(json.loads(response.content.decode('utf8')), [ {'id': 1, 'state': 1}, 
-										{'id': 2, 'state': 1}, 
-										{'id': 3, 'state': 0} ])
+		self.assertEqual(pumpMockList[0].state.call_count, 1)
+		self.assertEqual(pumpMockList[1].state.call_count, 1)
+		self.assertEqual(pumpMockList[2].state.call_count, 1)
+		self.assertEqual(json.loads(response.content.decode('utf8')), [ 
+							{'id': 1, 'state': 1}, 
+							{'id': 2, 'state': 1}, 
+							{'id': 3, 'state': 0} 
+						])
+
+class ValveDeviceApiTest(TestCase):
+	def setUp(self):
+		reset_device_mock('valve')
+
+	def test_init_valves(self):
+		self.assertEqual(valveMockList[0], automation.device_map['valve_1'])
+		self.assertEqual(valveMockList[1], automation.device_map['valve_2'])
+		self.assertEqual(valveMockList[2], automation.device_map['valve_3'])
+		self.assertEqual(valveMockList[3], automation.device_map['valve_4'])
+		self.assertEqual(valveMockList[4], automation.device_map['valve_5'])
+		self.assertEqual(valveMock.call_args_list, [call(1), call(2), call(3), call(4), call(5)])
+
+	def test_get_returns_valve_state_array(self):
+		valveMockList[0].state.return_value = 1
+		valveMockList[1].state.return_value = 1
+		valveMockList[2].state.return_value = 0
+		valveMockList[3].state.return_value = 1
+		valveMockList[4].state.return_value = 1
+
+		response = self.client.get('/api/valve/')
+
+		self.assertEqual(valveMockList[0].state.call_count, 1)
+		self.assertEqual(valveMockList[1].state.call_count, 1)
+		self.assertEqual(valveMockList[2].state.call_count, 1)
+		self.assertEqual(valveMockList[3].state.call_count, 1)
+		self.assertEqual(valveMockList[4].state.call_count, 1)
+
+		self.assertEqual(json.loads(response.content.decode('utf8')), [
+							{'id': 1, 'state': 1}, 
+							{'id': 2, 'state': 1}, 
+							{'id': 3, 'state': 0}, 
+							{'id': 4, 'state': 1}, 
+							{'id': 5, 'state': 1} 
+						])
 
 @patch('mainapp.api.devices.Thermistor', autospec=True)
-@patch('mainapp.api.devices.Heater', autospec=True)
-@patch('mainapp.api.devices.Valve', autospec=True)
-@patch('mainapp.api.devices.Pump', autospec=True)
 class AllDevicesApiTest(TestCase):
-	
-	def test_get_returns_all_devices_state_list_as_json_200(self, pumpMock, valveMock, heaterMock, thermistorMock):
+	def test_get_returns_all_devices_state_list_as_json_200(self, thermistorMock):
 		thermistorMock.temperatureArray.return_value = [25.1, 26.2, 27.3, 28.4, 29.5, 30.6, 31.7, 32.8]
-		heaterMock.return_value.state.side_effect = iter([1, 0])
-		valveMock.return_value.state.side_effect = iter([1, 1, 0, 1, 1])
-		pumpMock.return_value.state.side_effect = iter([1, 1, 0])
+
+		heaterMockList[0].state.return_value = 1
+		heaterMockList[1].state.return_value = 0
+
+		pumpMockList[0].state.return_value = 1
+		pumpMockList[1].state.return_value = 1
+		pumpMockList[2].state.return_value = 0
+
+		valveMockList[0].state.return_value = 1
+		valveMockList[1].state.return_value = 1
+		valveMockList[2].state.return_value = 0
+		valveMockList[3].state.return_value = 1
+		valveMockList[4].state.return_value = 1
 
 		response = self.client.get('/api/')
 		self.assertEqual(response.status_code, 200)
@@ -208,25 +251,32 @@ class AllDevicesApiTest(TestCase):
 		])
 
 
-class AutomationTest(TestCase):
+class AutomationApiTest(TestCase):
 	def test_automation_is_off_initially(self):
 		response = self.client.get('/api/automation/')
+
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(response['content-type'], 'application/json')
 		self.assertEqual(json.loads(response.content.decode('utf8')), [ {'state': 0} ])
 
-	@patch('raspberrypi.automation.start', autospec=True)
-	def test_start_automation(self, automationStartMock):
+	def test_start_automation(self):
 		response = self.client.put('/api/automation/start/')
-		self.assertEqual(automationStartMock.call_count, 1)
 
-	@patch('raspberrypi.automation.stop', autospec=True)
-	def test_start_automation(self, automationStopMock):
+		self.assertTrue(automation.running)
+
+	def test_stop_automation(self):
 		response = self.client.put('/api/automation/stop/')
-		self.assertEqual(automationStopMock.call_count, 1)
 
-	@patch('raspberrypi.automation.toggle', autospec=True)
-	def test_start_automation(self, automationToggleMock):
+		self.assertFalse(automation.running)
+
+	def test_toggle_automation(self):
+		self.assertFalse(automation.running)
+
 		response = self.client.put('/api/automation/toggle/')
-		self.assertEqual(automationToggleMock.call_count, 1)
+
+		self.assertTrue(automation.running)
+
+		response = self.client.put('/api/automation/toggle/')
+
+		self.assertFalse(automation.running)
 
