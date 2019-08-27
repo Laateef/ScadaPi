@@ -39,9 +39,9 @@ NTC_TEMPERATURE_COEFFICIENT	= 3980 	 # Thermistor Temperature Coefficient(beta)
 
 KELVIN_CONVERSION_CONSTANT	= 273.15 # Kelvin Conversion Constant
 
-HEATER_PIN_MAP			= {1:16, 2:18}
+HEATER_PIN_MAP			= {1:23, 2:24}
 
-VALVE_PIN_MAP			= {1:15, 2:17, 3:19, 4:21, 5:23}
+PUMP_PIN_MAP			= {1:6, 2:13, 3:26}
 
-PUMP_PIN_MAP			= {1:27, 2:29, 3:31}
+VALVE_PIN_MAP			= {1:4, 2:17, 3:27, 4:22, 5:5}
 
