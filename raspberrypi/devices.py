@@ -10,9 +10,7 @@ class Thermistor:
 
 	@staticmethod
 	def voltage_to_resistance(voltage_value):
-		# To make higher voltage refers to higher temperature we inverse the voltage against the source
 		voltage_value = enums.ADC_SOURCE_VOLTAGE - voltage_value
-
 		return enums.ADC_REFERENCE_RESISTANCE * ( voltage_value / (enums.ADC_SOURCE_VOLTAGE - voltage_value) )
 
 	@staticmethod
@@ -31,7 +29,7 @@ class Thermistor:
 		return Thermistor.adc_to_temperature(interfaces.ADC().readChannel(channel - 1))
 	
 	@staticmethod
-	def temperatureArray():
+	def temperature_list():
 		ary = []
 		adc = interfaces.ADC()
 		for ch in range(0, enums.TOTAL_CHANNEL_COUNT):

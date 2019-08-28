@@ -39,7 +39,7 @@ class ThermistorModuleTest(TestCase):
 	def test_returns_thermistor_temperature_array(self, adcMock):
 		adcMock.return_value.readChannel.side_effect = iter([10798, 11100, 12306, 13200, 17522, 23627, 24665, 16350])
 
-		temperature_array = devices.Thermistor.temperatureArray()
+		temperature_array = devices.Thermistor.temperature_list()
 		expected_array = [17, 18, 22, 25, 41, 82, 99, 36.28]
 		for i in range (0, enums.TOTAL_CHANNEL_COUNT):
 			self.assertAlmostEqual(temperature_array[i], expected_array[i], delta = 0.01)

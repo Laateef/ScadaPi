@@ -1,8 +1,6 @@
 import json
 
 from raspberrypi import enums
-from raspberrypi import devices
-
 
 def device_count(device_type):
 	if device_type == 'heater': return len(enums.HEATER_PIN_MAP)
@@ -11,15 +9,16 @@ def device_count(device_type):
 
 
 def thermistor_state_as_json(device_id):
+	from raspberrypi import automation
+
 	device_no = int(device_id)
-	return json.dumps([{ 'id': device_no, 'temperature': float(devices.Thermistor.temperature(device_no)) }])
+	return json.dumps([{ 'id': device_no, 'temperature': automation.temperature_list[device_no - 1] }])
 
 
 def thermistor_state_list_as_json():
 	from raspberrypi import automation
 
-	temperature_array = devices.Thermistor.temperatureArray()
-	return json.dumps([{'id': idx + 1, 'temperature': float(temperature_array[idx])} for idx in range(len(temperature_array))])
+	return json.dumps([{'id': idx + 1, 'temperature': automation.temperature_list[idx]} for idx in range(len(automation.temperature_list))])
 
 
 def generic_device_state_as_json(device_type, device_id):
