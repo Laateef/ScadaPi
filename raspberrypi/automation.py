@@ -72,8 +72,13 @@ def stop():
 
 def toggle():
 	global running
-	running = not running
 
+	if running: 
+		stop() 
+	else: 
+		start()
+
+	
 
 
 

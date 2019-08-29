@@ -2,11 +2,9 @@ from django.test import TestCase
 
 from raspberrypi import devices
 
-from mainapp import util
+from . import util
 
-from unittest.mock import patch
-from unittest.mock import call
-from unittest.mock import Mock
+from unittest.mock import patch, call, Mock
 
 import json
 
@@ -263,14 +261,17 @@ class AutomationApiTest(TestCase):
 
 		self.assertFalse(automation.running)
 
-	def test_toggle_automation(self):
-		self.assertFalse(automation.running)
-
+	@patch('raspberrypi.automation.stop', autospec=True)
+	@patch('raspberrypi.automation.start', autospec=True)
+	def test_toggle_automation(self, startFuncMock, stopFuncMock):
+		automation.running = True
 		response = self.client.put('/api/automation/toggle/')
 
-		self.assertTrue(automation.running)
-
+		self.assertEqual(stopFuncMock.call_count, 1)
+		
+		automation.running = False
 		response = self.client.put('/api/automation/toggle/')
 
-		self.assertFalse(automation.running)
+		self.assertEqual(startFuncMock.call_count, 1)
+
 
