@@ -2,48 +2,80 @@
 <html>
 	<head>
 		<title>ScadaPi</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="/static/css/reset.css">
+		<link rel="stylesheet" type="text/css" href="/static/css/main.css">
 	</head>
 	<body>
 		{% csrf_token %}
 
-		<button id="main_switch" style="position: absolute; top: 50px; left: 100px">Start</button>
-
-		<button id="h1" class="heater" style="position: absolute; top: 100px; left: 100px">Heater 1</button>
-		<button id="h2" class="heater" style="position: absolute; top: 150px; left: 100px">Heater 2</button>
-
-		<button id="p1" class="pump" style="position: absolute; top: 200px; left: 100px">Pump 1</button>
-		<button id="p2" class="pump" style="position: absolute; top: 250px; left: 100px">Pump 2</button>
-		<button id="p3" class="pump" style="position: absolute; top: 300px; left: 100px">Pump 3</button>
-
-		<button id="v1" class="valve" style="position: absolute; top: 350px; left: 100px">Valve 1</button>
-		<button id="v2" class="valve" style="position: absolute; top: 400px; left: 100px">Valve 2</button>
-		<button id="v3" class="valve" style="position: absolute; top: 450px; left: 100px">Valve 3</button>
-		<button id="v4" class="valve" style="position: absolute; top: 500px; left: 100px">Valve 4</button>
-		<button id="v5" class="valve" style="position: absolute; top: 550px; left: 100px">Valve 5</button>
+		<header>
+			<h1>ScadaPi</h1>
+			<p>SCADA software for metal hydride cooling system based on Raspberry Pi.</p>
+		</header>
 		
-		<span id="t1" class="thermistor" style="position: absolute; top: 100px; left: 200px">Thermistor 1</span>
-		<span id="t2" class="thermistor" style="position: absolute; top: 150px; left: 200px">Thermistor 2</span>
-		<span id="t3" class="thermistor" style="position: absolute; top: 200px; left: 200px">Thermistor 3</span>
-		<span id="t4" class="thermistor" style="position: absolute; top: 250px; left: 200px">Thermistor 4</span>
-		<span id="t5" class="thermistor" style="position: absolute; top: 300px; left: 200px">Thermistor 5</span>
-		<span id="t6" class="thermistor" style="position: absolute; top: 350px; left: 200px">Thermistor 6</span>
-		<span id="t7" class="thermistor" style="position: absolute; top: 400px; left: 200px">Thermistor 7</span>
-		<span id="t8" class="thermistor" style="position: absolute; top: 450px; left: 200px">Thermistor 8</span>
+		<nav id="main-tab-bar">
+			<a href="#control" class="tab-link" onclick="main.current_tab_changed(this)">Control</a>
+			<a href="#monitor" class="tab-link" onclick="main.current_tab_changed(this)">Monitor</a>
+			<a href="#about" class="tab-link" onclick="main.current_tab_changed(this)">About</a>
+		</nav>
+
+		<article class="tabs">
+			<section class="tab-content" id="control">
+				<button id="main_switch">Start</button>
+
+				<button id="h1" class="heater">Heater 1</button>
+				<button id="h2" class="heater">Heater 2</button>
+
+				<button id="p1" class="pump">Pump 1</button>
+				<button id="p2" class="pump">Pump 2</button>
+				<button id="p3" class="pump">Pump 3</button>
+
+				<button id="v1" class="valve">Valve 1</button>
+				<button id="v2" class="valve">Valve 2</button>
+				<button id="v3" class="valve">Valve 3</button>
+				<button id="v4" class="valve">Valve 4</button>
+				<button id="v5" class="valve">Valve 5</button>
+				
+				<span id="t1" class="thermistor">Thermistor 1</span>
+				<span id="t2" class="thermistor">Thermistor 2</span>
+				<span id="t3" class="thermistor">Thermistor 3</span>
+				<span id="t4" class="thermistor">Thermistor 4</span>
+				<span id="t5" class="thermistor">Thermistor 5</span>
+				<span id="t6" class="thermistor">Thermistor 6</span>
+				<span id="t7" class="thermistor">Thermistor 7</span>
+				<span id="t8" class="thermistor">Thermistor 8</span>
+			</section>
+			
+			<section class="tab-content" id="monitor">
+				<canvas id="temperature-chart"></canvas>
+			</section>
+			
+			<section class="tab-content" id="about">
+				<p>Copyright @ 2019 Abdullatif Kalla</p>
+				This software is developed by Abdullatif Kalla. 
+			</section>
+		</article>
 
 		<script src="/static/js/jquery-3.4.1.min.js"></script>
-		<script src="/static/js/base.js"></script>
+		<script src="/static/js/Chart.min.js"></script>
+		<script src="/static/js/main.js"></script>
+		<script src="/static/js/ctrl.js"></script>
+		<script src="/static/js/plot.js"></script>
 		<script>	
-		$(document).ready(function(){  
+		$(document).ready(function(){
+		  	document.getElementById('main-tab-bar').firstElementChild.click();
 			setInterval(function(){
-				base.populate_thermistor_array();
-				base.populate_heater_array();
-				base.populate_pump_array();
-				base.populate_valve_array();
-				base.adjust_main_switch();
+				ctrl.populate_thermistor_array();
+				ctrl.populate_heater_array();
+				ctrl.populate_pump_array();
+				ctrl.populate_valve_array();
+				ctrl.adjust_main_switch();
 			}, 1000);
 			
-			$('.heater, .pump, .valve').click(function(){ base.toggle_device(this); } );
-			$('#main_switch').click(base.toggle_automation);
+			$('.heater, .pump, .valve').click(function(){ ctrl.toggle_device(this); } );
+			$('#main_switch').click(ctrl.toggle_automation);
+			plot.init_chart();
 		});
 		</script>
 	</body>

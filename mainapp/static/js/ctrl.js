@@ -1,4 +1,4 @@
-var base = {
+var ctrl = {
 	get_device_no: function(device_btn_elm) {
 		return new RegExp("\\d+").exec(device_btn_elm.getAttribute('id'));
 	},

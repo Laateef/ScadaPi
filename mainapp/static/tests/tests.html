@@ -35,7 +35,7 @@
 	</div>
 
 	<script src="../js/jquery-3.4.1.min.js"></script>
-	<script src="../js/base.js"></script>
+	<script src="../js/ctrl.js"></script>
 	<script src="qunit-2.9.2.js"></script>
 	<script src="sinon-7.4.1.js"></script>
 
@@ -47,14 +47,14 @@
 		QUnit.testDone(function(){ server.restore(); });
 
 		QUnit.test("get device no from device element's id", function(assert){
-			assert.equal(base.get_device_no(document.getElementById('t8')), 8);
+			assert.equal(ctrl.get_device_no(document.getElementById('t8')), 8);
 		});
 
 		QUnit.test("get device type from device element's id", function(assert){
-			assert.equal(base.get_device_type(document.getElementById('h1')), 'heater');
-			assert.equal(base.get_device_type(document.getElementById('v5')), 'valve');
-			assert.equal(base.get_device_type(document.getElementById('p3')), 'pump');
-			assert.equal(base.get_device_type(document.getElementById('t8')), 'thermistor');
+			assert.equal(ctrl.get_device_type(document.getElementById('h1')), 'heater');
+			assert.equal(ctrl.get_device_type(document.getElementById('v5')), 'valve');
+			assert.equal(ctrl.get_device_type(document.getElementById('p3')), 'pump');
+			assert.equal(ctrl.get_device_type(document.getElementById('t8')), 'thermistor');
 		});
 
 		QUnit.test("populate thermistor boxes with temperature values by ajax", function(assert){
@@ -70,7 +70,7 @@
 			];
 			server.respondWith('GET', '/api/thermistor/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
 			
-			base.populate_thermistor_array();
+			ctrl.populate_thermistor_array();
 
 			server.respond();
 			
@@ -85,7 +85,7 @@
 			];
 			server.respondWith('GET', '/api/heater/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
 			
-			base.populate_heater_array();
+			ctrl.populate_heater_array();
 
 			server.respond();
 			
@@ -101,7 +101,7 @@
 			];
 			server.respondWith('GET', '/api/pump/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
 			
-			base.populate_pump_array();
+			ctrl.populate_pump_array();
 
 			server.respond();
 			
@@ -119,7 +119,7 @@
 			];
 			server.respondWith('GET', '/api/valve/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
 			
-			base.populate_valve_array();
+			ctrl.populate_valve_array();
 
 			server.respond();
 			
@@ -128,7 +128,7 @@
 		});
 
 		QUnit.test("toggle heater device state by ajax", function(assert){
-			base.toggle_device(document.getElementById('h1'));
+			ctrl.toggle_device(document.getElementById('h1'));
 
 			assert.equal(server.requests.length, 1);
 			assert.equal(server.requests[0].url, '/api/heater/1/toggle/');
@@ -136,7 +136,7 @@
 		});
 
 		QUnit.test("toggle pump device state by ajax", function(assert){
-			base.toggle_device(document.getElementById('p3'));
+			ctrl.toggle_device(document.getElementById('p3'));
 
 			assert.equal(server.requests.length, 1);
 			assert.equal(server.requests[0].url, '/api/pump/3/toggle/');
@@ -144,7 +144,7 @@
 		});
 
 		QUnit.test("toggle valve device state by ajax", function(assert){
-			base.toggle_device(document.getElementById('v5'));
+			ctrl.toggle_device(document.getElementById('v5'));
 
 			assert.equal(server.requests.length, 1);
 			assert.equal(server.requests[0].url, '/api/valve/5/toggle/');
@@ -152,7 +152,7 @@
 		});
 
 		QUnit.test("toggle automation by ajax", function(assert){
-			base.toggle_automation();
+			ctrl.toggle_automation();
 
 			assert.equal(server.requests.length, 1);
 			assert.equal(server.requests[0].url, '/api/automation/toggle/');
@@ -167,7 +167,7 @@
 
 			server.respondWith('GET', '/api/automation/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
 			
-			base.adjust_main_switch();
+			ctrl.adjust_main_switch();
 
 			server.respond();
 
@@ -177,7 +177,7 @@
 
 			server.respondWith('GET', '/api/automation/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
 
-			base.adjust_main_switch();
+			ctrl.adjust_main_switch();
 
 			server.respond();
 
