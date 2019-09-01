@@ -7,6 +7,8 @@ class Experiment(models.Model):
 class Temperature(models.Model):
 	experiment = models.ForeignKey(Experiment, default=None)
 
+	date = models.DateTimeField(auto_now_add=True)
+
 	thermistor_1 = models.DecimalField(max_digits=4, decimal_places=1, null=True)
 	thermistor_2 = models.DecimalField(max_digits=4, decimal_places=1, null=True)
 	thermistor_3 = models.DecimalField(max_digits=4, decimal_places=1, null=True)

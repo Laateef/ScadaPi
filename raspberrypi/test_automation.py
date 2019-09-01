@@ -35,7 +35,8 @@ class AutomationTest(TestCase):
 		time.sleep(enums.TEMPERATURE_REFRESH_INTERVAL + 0.1)
 
 		self.assertEqual(Temperature.objects.all().count(), 1)
-
+		self.assertTrue(timezone.now() - Temperature.objects.all().first().date < datetime.timedelta(milliseconds=1500))	
+		
 		automation.stop()	
 		
 		time.sleep(enums.TEMPERATURE_REFRESH_INTERVAL + 0.1)
