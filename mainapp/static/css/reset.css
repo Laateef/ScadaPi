@@ -98,7 +98,7 @@ input[type="checkbox"] {vertical-align: bottom;}
 
 select, input, textarea {font: 99% sans-serif;}
 
-table {font-size: inherit; font: 100%;}
+table {font-size: inherit; font: 100% sans-serif;}
 
 small {font-size: 85%;}
 

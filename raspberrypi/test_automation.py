@@ -45,7 +45,7 @@ class AutomationTest(TestCase):
 
 	def test_experiment_start_and_end_date(self):
 		automation.start()
-
+		
 		self.assertTrue(timezone.now() - automation.experiment.start_date < datetime.timedelta(milliseconds=500))	
 		
 		time.sleep(enums.TEMPERATURE_REFRESH_INTERVAL + 0.1)

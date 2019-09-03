@@ -1,13 +1,17 @@
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
+from django.db import connection, transaction
 
 from raspberrypi import devices
 
-from . import util
+from . import util, models
+
+#from .models import Experiment, Temperature
 
 from unittest.mock import patch, call, Mock
 
 import json
 
+import datetime
 
 heaterMockList=[Mock(devices.Heater), Mock(devices.Heater)]
 
@@ -274,4 +278,76 @@ class AutomationApiTest(TestCase):
 
 		self.assertEqual(startFuncMock.call_count, 1)
 
+
+class ExperimentAndTemperatureApiTest(TransactionTestCase):
+	def setUp(self):
+		cursor = connection.cursor()
+
+		equery = ' insert into mainapp_experiment(id, start_date, end_date) values(?,?,?) '
+		cursor.execute(equery, ( 1, str(datetime.datetime(2019, 6, 12, 15, 30, 25)), str(datetime.datetime(2019, 6, 12, 16, 30, 25)) ) )
+		cursor.execute(equery, ( 2, str(datetime.datetime(2019, 6, 27, 16, 30, 25)), str(datetime.datetime(2019, 6, 27, 18, 30, 36)) ) )
+		cursor.execute(equery, ( 3, str(datetime.datetime(2019, 6, 29, 17, 30, 25)), str(datetime.datetime(2019, 6, 29, 20, 30, 45)) ) )
+
+		tquery = ' insert into mainapp_temperature(id, experiment_id, date) values(?,?,?) '
+		cursor.execute(tquery, ( 1, 1, str(datetime.datetime(2019, 6, 12, 15, 30, 26)) ) )
+		cursor.execute(tquery, ( 2, 2, str(datetime.datetime(2019, 6, 27, 16, 30, 26)) ) )
+		cursor.execute(tquery, ( 3, 2, str(datetime.datetime(2019, 6, 27, 16, 30, 28)) ) )
+		cursor.execute(tquery, ( 4, 2, str(datetime.datetime(2019, 6, 27, 16, 30, 30)) ) )
+
+		transaction.commit()
+
+	def test_returns_all_experiments(self):
+		response = self.client.get('/api/experiment/')
+
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response['content-type'], 'application/json')
+
+		response_object = json.loads(response.content.decode('utf8'))
+		self.assertEqual(len(response_object), 3)
+		self.assertEqual(response_object[0]['id'], 1)
+		self.assertEqual(response_object[1]['id'], 2)
+		self.assertEqual(response_object[2]['id'], 3)
+
+	def test_returns_all_temperature_value_related_to_a_given_experiment(self):
+		response = self.client.get('/api/temperature/?experiment=2')
+
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response['content-type'], 'application/json')
+
+		response_object = json.loads(response.content.decode('utf8'))
+		self.assertEqual(len(response_object), 3)
+		self.assertEqual(response_object[0]['id'], 2)
+		self.assertEqual(response_object[0]['experiment'], 2)
+		self.assertEqual(response_object[1]['id'], 3)
+		self.assertEqual(response_object[1]['experiment'], 2)
+		self.assertEqual(response_object[2]['id'], 4)
+		self.assertEqual(response_object[2]['experiment'], 2)
+
+	def test_returns_experiment_record_after_a_specific_id(self):
+		response = self.client.get('/api/experiment/?last=1')
+
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response['content-type'], 'application/json')
+
+		response_object = json.loads(response.content.decode('utf8'))
+		self.assertEqual(len(response_object), 2)
+		self.assertEqual(response_object[0]['id'], 2)
+		self.assertEqual(response_object[0]['start_date'], '2019-06-27 16:30:25')
+		self.assertEqual(response_object[1]['id'], 3)
+		self.assertEqual(response_object[1]['start_date'], '2019-06-29 17:30:25')
+
+	def test_returns_temperature_records_after_a_specific_date(self):
+		response = self.client.get('/api/temperature/?experiment=2&last_date=2019-6-27 16:30:26')
+
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response['content-type'], 'application/json')
+
+		response_object = json.loads(response.content.decode('utf8'))
+		self.assertEqual(len(response_object), 2)
+		self.assertEqual(response_object[0]['id'], 3)
+		self.assertEqual(response_object[0]['experiment'], 2)
+		self.assertEqual(response_object[0]['date'], '2019-06-27 16:30:28')
+		self.assertEqual(response_object[1]['id'], 4)
+		self.assertEqual(response_object[1]['experiment'], 2)
+		self.assertEqual(response_object[1]['date'], '2019-06-27 16:30:30')
 

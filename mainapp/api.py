@@ -1,9 +1,14 @@
 from django.http import HttpResponse
+from django.utils.dateparse import parse_datetime
+from django.utils.timezone import make_aware
 
 from raspberrypi import devices
-from mainapp import util
+
+from . import util, models
 
 import json
+
+from datetime import datetime
 
 def thermistor_view(request, thermistor_id=None):
 	return HttpResponse(util.thermistor_state_as_json(thermistor_id) if thermistor_id else util.thermistor_state_list_as_json(), content_type='application/json')
@@ -43,4 +48,29 @@ def automation_view(request, operation=None):
 		return HttpResponse()
 
 	return HttpResponse(json.dumps([{ 'state': automation.running }]), content_type='application/json')
+
+def experiment_view(request):
+	last_experiment_id = request.GET.get('last')
+
+	experiment_list = models.Experiment.objects.all().order_by('id')
+
+	if last_experiment_id:
+		experiment_list = experiment_list.filter(id__gt=last_experiment_id)
+	
+	return HttpResponse(json.dumps([{'id': e.id, 'start_date': datetime.strftime(e.start_date, '%Y-%m-%d %H:%M:%S'), 'end_date': datetime.strftime(e.end_date, '%Y-%m-%d %H:%M:%S')} for e in experiment_list]), content_type='application/json')
+
+def temperature_view(request):
+	temperature_list = models.Temperature.objects.filter(experiment=request.GET.get('experiment'))
+
+	last_fetch_date = request.GET.get('last_date')
+
+	if last_fetch_date:
+		temperature_list = temperature_list.filter(date__gt=make_aware(parse_datetime(last_fetch_date)))
+
+	return HttpResponse(json.dumps([{
+				'id': t.id,
+				'experiment': t.experiment_id,
+				'date': datetime.strftime(t.date, '%Y-%m-%d %H:%M:%S'),
+				'temperature_array': [t.thermistor_1, t.thermistor_2, t.thermistor_3, t.thermistor_4, t.thermistor_5, t.thermistor_6, t.thermistor_7, t.thermistor_8]
+					} for t in temperature_list]), content_type='application/json')
 

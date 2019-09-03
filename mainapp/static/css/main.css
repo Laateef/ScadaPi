@@ -12,9 +12,10 @@ nav {
 	background-color: #f1f1f1;
 	border: 1px solid #ccc;
 	overflow: hidden;
+	margin-bottom: 20px;
 }
 
-a.tab-link {
+.tab-link {
 	padding: 15px;
 	float: left;
 	display: block;
@@ -30,28 +31,85 @@ a.tab-link {
 	cursor: pointer;
 }
 
-a.tab-link:hover {
-	color: #555;
+.tab-link:hover {
+	color: dodgerblue;
 	font-size: 1.4em;
 }
 
-a.tab-link.active {
-	color: darkblue;
+.tab-link.active {
+	color: navy;
 	background-color: lightgray;
 	border-bottom: 5px solid dodgerblue;
 }
 
-section.tab-content {
+.tab-content {
 	display: none;
 	padding: 6px 12px;
-	border: 1px solid #ccc;
-	border-top: none;
+	border: none;
 }
 
-a.tab-link, section.tab-content {
+.tab-content h2 {
+	margin: 5px;
+}
+
+.tab-link, .tab-content {
 	-webkit-transition: all 300ms ease;
 	-moz-transition: all 300ms ease;
 	-ms-transition: all 300ms ease;
 	-o-transition: all 300ms ease;
 	transition: all 300ms ease;
+}
+
+#experiment-view {
+	float: left;
+	min-width: 265px;
+	overflow-y: scroll;
+	text-align: right;
+	border-top: 2px solid black;
+	padding: 10px;
+}
+
+#experiment-view .experiment-link {
+	display: block;
+	cursor: pointer;
+	background-color: #F5F5F5;
+	color: navy;
+	padding: 7px;
+	margin: 3px;
+	border: 1px solid gray;
+}
+
+#experiment-view .experiment-link:hover {
+	background-color: #FBFBFB;
+	border-left: 5px solid #6EE0FF;
+}
+
+#experiment-view .experiment-link.active {
+	background-color: #DCDCDC;
+	border-left: 5px solid dodgerblue;
+}
+
+#experiment-view .experiment-id {
+	color: navy;
+	font-weight: bold;
+}
+
+#experiment-view .decorative-arrow {
+	color: darkmagenta;
+	margin-left: 3px;
+	margin-right: 5px;
+}
+
+#experiment-view .experiment-date {
+	color: #555;
+}
+
+#chart-view {
+	margin-left: 267px;
+}
+
+#container::after {
+	content: "";
+	clear: both;
+	display: table;
 }

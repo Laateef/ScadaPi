@@ -16,7 +16,7 @@
 		
 		<nav id="main-tab-bar">
 			<a href="#control" class="tab-link" onclick="main.current_tab_changed(this)">Control</a>
-			<a href="#monitor" class="tab-link" onclick="main.current_tab_changed(this)">Monitor</a>
+			<a href="#monitor" class="tab-link" onclick="main.current_tab_changed(this); setTimeout(main.adjust_experiment_view_height, 100);">Monitor</a>
 			<a href="#about" class="tab-link" onclick="main.current_tab_changed(this)">About</a>
 		</nav>
 
@@ -48,7 +48,18 @@
 			</section>
 			
 			<section class="tab-content" id="monitor">
-				<canvas id="temperature-chart"></canvas>
+				<h2>Experiments</h2>
+				<div id="container">
+					<div id="experiment-view">
+<a class="experiment-link active" onclick="plot.select_experiment(this)"><span class="experiment-id">10</span><span class="decorative-arrow">&gt;</span><span class="experiment-date">2019-05-12 13:52:01</span></a>
+						<a class="experiment-link" onclick="plot.select_experiment(this)"><span class="experiment-id">9</span><span class="decorative-arrow">&gt;</span><span class="experiment-date">2019-05-12 13:52:01</span></a>
+						<a class="experiment-link" onclick="plot.select_experiment(this)"><span class="experiment-id">8</span><span class="decorative-arrow">&gt;</span><span class="experiment-date">2019-05-12 13:52:01</span></a>
+									
+					</div>
+					<div id="chart-view">
+						<canvas id="temperature-chart"></canvas>
+					</div>
+				</div>
 			</section>
 			
 			<section class="tab-content" id="about">
@@ -58,24 +69,30 @@
 		</article>
 
 		<script src="/static/js/jquery-3.4.1.min.js"></script>
-		<script src="/static/js/Chart.min.js"></script>
+		<script src="/static/js/Chart.bundle.min.js"></script>
 		<script src="/static/js/main.js"></script>
 		<script src="/static/js/ctrl.js"></script>
 		<script src="/static/js/plot.js"></script>
 		<script>	
 		$(document).ready(function(){
 		  	document.getElementById('main-tab-bar').firstElementChild.click();
+
+			plot.init();
+
 			setInterval(function(){
 				ctrl.populate_thermistor_array();
 				ctrl.populate_heater_array();
 				ctrl.populate_pump_array();
 				ctrl.populate_valve_array();
 				ctrl.adjust_main_switch();
+				plot.update_temperature();
 			}, 1000);
 			
 			$('.heater, .pump, .valve').click(function(){ ctrl.toggle_device(this); } );
+
 			$('#main_switch').click(ctrl.toggle_automation);
-			plot.init_chart();
+
+			window.onresize = main.adjust_experiment_view_height;
 		});
 		</script>
 	</body>

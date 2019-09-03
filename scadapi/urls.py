@@ -23,6 +23,10 @@ from mainapp import api
 
 urlpatterns = [
     url(r'^$', views.main_page),
+
+    url(r'^api/experiment/$', api.experiment_view),
+    url(r'^api/temperature/$', api.temperature_view),
+
     url(r'^api/automation/$', api.automation_view),
     url(r'^api/automation/(\w+)/$', api.automation_view),
 
