@@ -57,12 +57,55 @@ device_map = {
 	'valve_5': Valve(5)
 }
 
+def heaterLoop():
+	global running
+
+	while running:
+		if temperature_list[0] < 45:
+			device_map['heater_1'].start()
+			device_map['heater_2'].start()	
+
+		if temperature_list[0] > 50:
+			device_map['heater_1'].stop()
+			device_map['heater_2'].stop()	
+
+def controlLoop():
+	global running
+
+	while running:
+		device_map['valve_1'].start()	
+		device_map['valve_2'].stop()
+		device_map['valve_3'].stop()	
+		device_map['valve_4'].start()
+		device_map['valve_5'].start()	
+
+		device_map['pump_1'].stop()
+		device_map['pump_2'].start()
+		device_map['pump_3'].start()
+
+		time.sleep(1800)
+
+		device_map['valve_1'].stop()	
+		device_map['valve_2'].start()
+		device_map['valve_3'].start()	
+		device_map['valve_4'].stop()
+		device_map['valve_5'].stop()	
+
+		device_map['pump_1'].start()
+		device_map['pump_2'].start()
+		device_map['pump_3'].stop()
+
+		time.sleep(1800)
+
 def start():
 	global running, experiment
 	running = True
 	
 	experiment = Experiment.objects.create()
 	experiment.save()
+
+	Thread(target=heaterLoop, daemon=True).start()
+	Thread(target=controlLoop, daemon=True).start()
 
 def stop():
 	global running, experiment

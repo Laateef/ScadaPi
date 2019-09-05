@@ -66,10 +66,15 @@ nav {
 	text-align: center;
 }
 
-#control h2 {
+#control #panel {
 	position: absolute;
-	top: 10px;
+	top: 8px;
 	left: 30px;
+	font-weight: bold;
+}
+
+#control #panel * {
+	display: inline-block;
 	font-weight: bold;
 }
 
@@ -83,7 +88,7 @@ nav {
 	background-color: transparent;
 	background-repeat: no-repeat;
 	margin: 25px;
-	margin-top: 75px;
+	margin-top: 100px;
 
 }
 
@@ -149,9 +154,11 @@ button {
 }
 
 #main-switch {
+/*
 	position: absolute;
 	top: 4px;
 	left: 150px;
+*/
 	width: 85px;
 	height: 45px;
 	background-image: url('/static/images/automation-off.png');
@@ -271,41 +278,41 @@ button {
 }
 
 #t1 {
-	top: -65px;
-	left: 300px;
+	top: -90px;
+	left: 400px;
 }
 
 #t2 {
-	top: -65px;
-	left: 370px;
+	top: -90px;
+	left: 470px;
 }
 
 #t3 {
-	top: -65px;
-	left: 440px;
+	top: -90px;
+	left: 540px;
 }
 
 #t4 {
-	top: -65px;
-	left: 510px;
+	top: -90px;
+	left: 610px;
 }
 
 #t5 {
-	top: -65px;
-	left: 580px;
+	top: -90px;
+	left: 680px;
 }
 
 #t6 {
-	top: -65px;
-	left: 650px;
+	top: -90px;
+	left: 750px;
 }
 
 #t7 {
-	top: -65px;
-	left: 720px;
+	top: -90px;
+	left: 820px;
 }
 
 #t8 {
-	top: -65px;
-	left: 790px;
+	top: -90px;
+	left: 890px;
 }

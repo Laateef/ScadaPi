@@ -21,22 +21,25 @@
 		</nav>
 
 		<article class="tabs">
-			<section class="tab-content" id="control">			
-				<h2>Automation</h2>
-				<button id="main-switch" data-active="0" onclick="ctrl.toggle_automation(); setTimeout(plot.update_experiment, 1000);"></button>
+			<section class="tab-content" id="control">	
+				<div id="panel">		
+					<h2>Manual</h2>
+					<button id="main-switch" data-active="0" onclick="ctrl.toggle_automation(); setTimeout(plot.update_experiment, 1000);"></button>
+					<h2>Automatic</h2>
+				</div>
 
 				<div id="diagram">
-					<button id="h1" class="heater" data-active="1"></button>
+					<button id="h1" class="heater" data-active="0"></button>
 					<button id="h2" class="heater" data-active="0"></button>
 
-					<button id="p1" class="pump" data-active="1"></button>
+					<button id="p1" class="pump" data-active="0"></button>
 					<button id="p2" class="pump" data-active="0"></button>
 					<button id="p3" class="pump" data-active="0"></button>
 
-					<button id="v1" class="valve" data-active="1"></button>
-					<button id="v2" class="valve" data-active="1"></button>
+					<button id="v1" class="valve" data-active="0"></button>
+					<button id="v2" class="valve" data-active="0"></button>
 					<button id="v3" class="valve" data-active="0"></button>
-					<button id="v4" class="valve" data-active="1"></button>
+					<button id="v4" class="valve" data-active="0"></button>
 					<button id="v5" class="valve" data-active="0"></button>
 					
 					<span id="t1" class="thermistor">T1</span>
@@ -90,8 +93,17 @@
 				ctrl.adjust_main_switch();
 				plot.update_temperature();
 			}, 1000);
+
+			// We have actually one heater. However, due to the high current the heater draws, we dedicated two relays to it.
+			// The relays of the heater shoud be actuated simultaneously.
+			$('.heater').click(function(){ 
+				ctrl.toggle_device(document.getElementById('h1')); 
+				ctrl.toggle_device(document.getElementById('h2')); 
+			} );	
 			
-			$('.heater, .pump, .valve').click(function(){ ctrl.toggle_device(this); } );
+			$('.pump, .valve').click(function(){ 
+				ctrl.toggle_device(this); 
+			} );		
 
 			window.onresize = main.adjust_experiment_view_height;
 		});
