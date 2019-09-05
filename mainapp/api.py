@@ -60,17 +60,17 @@ def experiment_view(request):
 	return HttpResponse(json.dumps([{'id': e.id, 'start_date': datetime.strftime(e.start_date, '%Y-%m-%d %H:%M:%S'), 'end_date': datetime.strftime(e.end_date, '%Y-%m-%d %H:%M:%S')} for e in experiment_list]), content_type='application/json')
 
 def temperature_view(request):
-	temperature_list = models.Temperature.objects.filter(experiment=request.GET.get('experiment'))
+	temperature_object_list = models.Temperature.objects.filter(experiment=request.GET.get('experiment'))
 
 	last_fetch_date = request.GET.get('last_date')
 
 	if last_fetch_date:
-		temperature_list = temperature_list.filter(date__gt=make_aware(parse_datetime(last_fetch_date)))
+		temperature_object_list = temperature_object_list.filter(date__gt=make_aware(parse_datetime(last_fetch_date)))
 
 	return HttpResponse(json.dumps([{
 				'id': t.id,
 				'experiment': t.experiment_id,
 				'date': datetime.strftime(t.date, '%Y-%m-%d %H:%M:%S'),
-				'temperature_array': [t.thermistor_1, t.thermistor_2, t.thermistor_3, t.thermistor_4, t.thermistor_5, t.thermistor_6, t.thermistor_7, t.thermistor_8]
-					} for t in temperature_list]), content_type='application/json')
+				'temperature_array': [float(t.thermistor_1), float(t.thermistor_2), float(t.thermistor_3), float(t.thermistor_4), float(t.thermistor_5), float(t.thermistor_6), float(t.thermistor_7), float(t.thermistor_8)]
+					} for t in temperature_object_list]), content_type='application/json')
 

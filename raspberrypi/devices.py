@@ -33,7 +33,7 @@ class Thermistor:
 		ary = []
 		adc = interfaces.ADC()
 		for ch in range(0, enums.TOTAL_CHANNEL_COUNT):
-			ary.insert(ch, Thermistor.adc_to_temperature(adc.readChannel(ch)))
+			ary.insert(ch, float("{0:.2f}".format(Thermistor.adc_to_temperature(adc.readChannel(ch)))))
 
 		return ary
 

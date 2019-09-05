@@ -62,38 +62,38 @@ def heaterLoop():
 
 	while running:
 		if temperature_list[0] < 45:
-			device_map['heater_1'].start()
-			device_map['heater_2'].start()	
+			device_map['heater_1'].on()
+			device_map['heater_2'].on()	
 
 		if temperature_list[0] > 50:
-			device_map['heater_1'].stop()
-			device_map['heater_2'].stop()	
+			device_map['heater_1'].off()
+			device_map['heater_2'].off()	
 
 def controlLoop():
 	global running
 
 	while running:
-		device_map['valve_1'].start()	
-		device_map['valve_2'].stop()
-		device_map['valve_3'].stop()	
-		device_map['valve_4'].start()
-		device_map['valve_5'].start()	
+		device_map['valve_1'].on()	
+		device_map['valve_2'].off()
+		device_map['valve_3'].off()	
+		device_map['valve_4'].on()
+		device_map['valve_5'].on()	
 
-		device_map['pump_1'].stop()
-		device_map['pump_2'].start()
-		device_map['pump_3'].start()
+		device_map['pump_1'].off()
+		device_map['pump_2'].on()
+		device_map['pump_3'].on()
 
 		time.sleep(1800)
 
-		device_map['valve_1'].stop()	
-		device_map['valve_2'].start()
-		device_map['valve_3'].start()	
-		device_map['valve_4'].stop()
-		device_map['valve_5'].stop()	
+		device_map['valve_1'].off()	
+		device_map['valve_2'].on()
+		device_map['valve_3'].on()	
+		device_map['valve_4'].off()
+		device_map['valve_5'].off()	
 
-		device_map['pump_1'].start()
-		device_map['pump_2'].start()
-		device_map['pump_3'].stop()
+		device_map['pump_1'].on()
+		device_map['pump_2'].on()
+		device_map['pump_3'].off()
 
 		time.sleep(1800)
 

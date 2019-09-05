@@ -288,11 +288,11 @@ class ExperimentAndTemperatureApiTest(TransactionTestCase):
 		cursor.execute(equery, ( 2, str(datetime.datetime(2019, 6, 27, 16, 30, 25)), str(datetime.datetime(2019, 6, 27, 18, 30, 36)) ) )
 		cursor.execute(equery, ( 3, str(datetime.datetime(2019, 6, 29, 17, 30, 25)), str(datetime.datetime(2019, 6, 29, 20, 30, 45)) ) )
 
-		tquery = ' insert into mainapp_temperature(id, experiment_id, date) values(?,?,?) '
-		cursor.execute(tquery, ( 1, 1, str(datetime.datetime(2019, 6, 12, 15, 30, 26)) ) )
-		cursor.execute(tquery, ( 2, 2, str(datetime.datetime(2019, 6, 27, 16, 30, 26)) ) )
-		cursor.execute(tquery, ( 3, 2, str(datetime.datetime(2019, 6, 27, 16, 30, 28)) ) )
-		cursor.execute(tquery, ( 4, 2, str(datetime.datetime(2019, 6, 27, 16, 30, 30)) ) )
+		tquery = ' insert into mainapp_temperature(id, experiment_id, date, thermistor_1, thermistor_2, thermistor_3, thermistor_4, thermistor_5, thermistor_6, thermistor_7, thermistor_8) values(?,?,?,?,?,?,?,?,?,?,?) '
+		cursor.execute(tquery, ( 1, 1, str(datetime.datetime(2019, 6, 12, 15, 30, 26)), 25.1, 26.2, 27.3, 28.4, 29.5, 30.6, 31.7, 32.8 ) )
+		cursor.execute(tquery, ( 2, 2, str(datetime.datetime(2019, 6, 27, 16, 30, 26)), 26.2, 27.3, 28.4, 29.5, 30.6, 31.7, 32.8, 33.9 ) )
+		cursor.execute(tquery, ( 3, 2, str(datetime.datetime(2019, 6, 27, 16, 30, 28)), 27.3, 28.4, 29.5, 30.6, 31.7, 32.8, 33.9, 35.0 ) )
+		cursor.execute(tquery, ( 4, 2, str(datetime.datetime(2019, 6, 27, 16, 30, 30)), 28.4, 29.5, 30.6, 31.7, 32.8, 33.9, 35.0, 35.1 ) )
 
 		transaction.commit()
 
