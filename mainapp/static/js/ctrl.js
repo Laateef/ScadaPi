@@ -22,7 +22,7 @@ var ctrl = {
 			method: 'GET',
 			success: function(response) {
 				for (var i = 0; i < response.length; ++i) {
-					document.getElementById(device_type[0] + response[i].id).innerHTML = response[i].state;
+					document.getElementById(device_type[0] + response[i].id).setAttribute('data-active', response[i].state);
 				}
 			}
 		});
@@ -48,10 +48,7 @@ var ctrl = {
 			url: '/api/automation/', 
 			method: 'GET',
 			success: function(response) {
-				if (response[0].state)
-					document.getElementById('main_switch').innerHTML = 'Stop';
-				else
-					document.getElementById('main_switch').innerHTML = 'Start';
+				document.getElementById('main-switch').setAttribute('data-active', response[0].state);
 			}
 		});
 

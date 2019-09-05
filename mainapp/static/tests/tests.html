@@ -12,7 +12,7 @@
 	<div id="qunit-fixture">
 		<input name="csrfmiddlewaretoken" value="0123456789">
 
-		<button id="main_switch">Start</button>
+		<button id="main-switch" data-active="0">Start</button>
 
 		<span id="t1" class="thermistor">Thermistor 1</span>
 		<span id="t2" class="thermistor">Thermistor 2</span>
@@ -22,16 +22,16 @@
 		<span id="t6" class="thermistor">Thermistor 6</span>
 		<span id="t7" class="thermistor">Thermistor 7</span>
 		<span id="t8" class="thermistor">Thermistor 8</span>
-		<button id="v1" class="valve">Valve 1</button>
-		<button id="v2" class="valve">Valve 2</button>
-		<button id="v3" class="valve">Valve 3</button>
-		<button id="v4" class="valve">Valve 4</button>
-		<button id="v5" class="valve">Valve 5</button>
-		<button id="p1" class="pump">Pump 1</button>
-		<button id="p2" class="pump">Pump 2</button>
-		<button id="p3" class="pump">Pump 3</button>
-		<button id="h1" class="heater">Heater 1</button>
-		<button id="h2" class="heater">Heater 2</button>
+		<button id="v1" class="valve" data-active="1">Valve 1</button>
+		<button id="v2" class="valve" data-active="0">Valve 2</button>
+		<button id="v3" class="valve" data-active="0">Valve 3</button>
+		<button id="v4" class="valve" data-active="0">Valve 4</button>
+		<button id="v5" class="valve" data-active="0">Valve 5</button>
+		<button id="p1" class="pump" data-active="1">Pump 1</button>
+		<button id="p2" class="pump" data-active="0">Pump 2</button>
+		<button id="p3" class="pump" data-active="0">Pump 3</button>
+		<button id="h1" class="heater" data-active="1">Heater 1</button>
+		<button id="h2" class="heater" data-active="1">Heater 2</button>
 
 		<canvas id="temperature-chart"></canvas>
 		<div id="experiment-view">
@@ -106,7 +106,7 @@
 			server.respond();
 			
 			for(var i = 1; i <= responseData.length; ++i)
-				assert.equal(document.getElementById('h' + i).innerHTML, responseData[i - 1].state);
+				assert.equal(document.getElementById('h' + i).getAttribute('data-active'), responseData[i - 1].state);
 		});
 
 		QUnit.test("fetch and set pump device state by ajax", function(assert){
@@ -122,7 +122,7 @@
 			server.respond();
 			
 			for(var i = 1; i <= responseData.length; ++i)
-				assert.equal(document.getElementById('p' + i).innerHTML, responseData[i - 1].state);
+				assert.equal(document.getElementById('p' + i).getAttribute('data-active'), responseData[i - 1].state);
 		});
 
 		QUnit.test("fetch and set valve device state by ajax", function(assert){
@@ -140,7 +140,7 @@
 			server.respond();
 			
 			for(var i = 1; i <= responseData.length; ++i)
-				assert.equal(document.getElementById('v' + i).innerHTML, responseData[i - 1].state);
+				assert.equal(document.getElementById('v' + i).getAttribute('data-active'), responseData[i - 1].state);
 		});
 
 		QUnit.test("toggle heater device state by ajax", function(assert){
@@ -176,8 +176,8 @@
 		});
 
 		QUnit.test("adjust main switch by ajax", function(assert){
-			startStopButton = document.getElementById('main_switch')
-			assert.equal(startStopButton.innerHTML, "Start")
+			startStopButton = document.getElementById('main-switch')
+			assert.equal(startStopButton.getAttribute('data-active'), '0')
 
 			var responseData = [{'state': 1}];
 
@@ -187,7 +187,7 @@
 
 			server.respond();
 
-			assert.equal(startStopButton.innerHTML, "Stop")
+			assert.equal(startStopButton.getAttribute('data-active'), '1')
 
 			responseData = [{'state': 0}];
 
@@ -197,7 +197,7 @@
 
 			server.respond();
 
-			assert.equal(startStopButton.innerHTML, "Start")
+			assert.equal(startStopButton.getAttribute('data-active'), '0')
 		});
 
 		QUnit.test("select an experiment", function(assert){

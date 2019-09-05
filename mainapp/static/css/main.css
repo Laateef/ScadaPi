@@ -9,14 +9,15 @@ header h1 {
 }
 
 nav {
+	width: 100%;
 	background-color: #f1f1f1;
 	border: 1px solid #ccc;
-	overflow: hidden;
 	margin-bottom: 20px;
+	overflow: hidden;
 }
 
 .tab-link {
-	padding: 15px;
+	padding: 10px;
 	float: left;
 	display: block;
 	text-align: center;
@@ -58,6 +59,32 @@ nav {
 	-ms-transition: all 300ms ease;
 	-o-transition: all 300ms ease;
 	transition: all 300ms ease;
+}
+
+#control {
+	position: relative;
+	text-align: center;
+}
+
+#control h2 {
+	position: absolute;
+	top: 10px;
+	left: 30px;
+	font-weight: bold;
+}
+
+#diagram {
+	display: inline-block;
+	position: relative;
+	min-width: 1145px;
+	min-height: 768px;
+	background-image: url('/static/images/diagram.png');
+	border: none;
+	background-color: transparent;
+	background-repeat: no-repeat;
+	margin: 25px;
+	margin-top: 75px;
+
 }
 
 #experiment-view {
@@ -106,10 +133,179 @@ nav {
 
 #chart-view {
 	margin-left: 267px;
+	min-width: 700px;
 }
 
 #container::after {
 	content: "";
 	clear: both;
 	display: table;
+}
+
+button {
+	border: none;
+	background-color: transparent;
+	background-repeat: no-repeat;
+}
+
+#main-switch {
+	position: absolute;
+	top: 4px;
+	left: 150px;
+	width: 85px;
+	height: 45px;
+	background-image: url('/static/images/automation-off.png');
+}
+
+#main-switch[data-active='1'] {
+	background-image: url('/static/images/automation-on.png');
+}
+
+.heater {
+	position: absolute;
+	width: 102px;
+	height: 54px;
+	background-image: url('/static/images/heater-off.png');
+}
+
+.heater[data-active='1'] {
+	background-image: url('/static/images/heater-on.png');
+}
+
+#h1 {
+	top: 600px;
+	left: 916px;
+}
+
+#h2 {
+	top: 600px;
+	left: 1011px;
+}
+.pump {
+	position: absolute;
+	width: 86px;
+	height: 86px;
+	background-image: url('/static/images/pump-off.png');
+}
+
+.pump[data-active='1'] {
+	background-image: url('/static/images/pump-on.png');
+}
+
+#p1 {
+	top: 435px;
+	left: 41px;
+}
+
+#p2 {
+	top: 435px;
+	left: 483px;
+}
+
+#p3 {
+	top: 435px;
+	left: 920px;
+}
+
+#v1 {
+	position: absolute;
+	top: -18px;
+	left: 530px;
+	width: 88px;
+	height: 49px;
+	background-image: url('/static/images/two-way-valve-off.png');
+}
+
+#v1[data-active='1'] {
+	background-image: url('/static/images/two-way-valve-on.png');
+}
+
+#v2, #v3, #v4, #v5 {
+	position: absolute;
+	width: 88px;
+	height: 68px;
+}
+
+#v2 {
+	top: 288px;
+	left: 50px;
+}
+
+#v3 {
+	top: 226px;
+	left: 150px;
+}
+
+#v4 {
+	top: 232px;
+	left: 903px;
+}
+
+#v5 {
+	top: 295px;
+	left: 1002px;
+}
+
+#v2, #v3 {
+	transform: rotate(270deg);
+	background-image: url('/static/images/three-way-valve-bottom-off.png');
+}
+
+#v2[data-active='1'], #v3[data-active='1'] {
+	background-image: url('/static/images/three-way-valve-left-off.png');
+}
+
+#v4, #v5 {
+	transform: rotate(90deg);
+	background-image: url('/static/images/three-way-valve-bottom-off.png');
+}
+
+#v4[data-active='1'], #v5[data-active='1'] {
+	background-image: url('/static/images/three-way-valve-right-off.png');
+}
+
+.thermistor {
+	position: absolute;
+	width: 60px;
+	height: 40px;
+}
+
+#t1 {
+	top: -65px;
+	left: 300px;
+}
+
+#t2 {
+	top: -65px;
+	left: 370px;
+}
+
+#t3 {
+	top: -65px;
+	left: 440px;
+}
+
+#t4 {
+	top: -65px;
+	left: 510px;
+}
+
+#t5 {
+	top: -65px;
+	left: 580px;
+}
+
+#t6 {
+	top: -65px;
+	left: 650px;
+}
+
+#t7 {
+	top: -65px;
+	left: 720px;
+}
+
+#t8 {
+	top: -65px;
+	left: 790px;
 }
