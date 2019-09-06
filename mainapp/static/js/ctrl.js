@@ -26,38 +26,57 @@ var ctrl = {
 				}
 			}
 		});
-	},	
-	populate_heater_array: function() {
-		this.populate_generic_device_array('heater');
 	},
-	populate_pump_array: function() {
-		this.populate_generic_device_array('pump');
+	make_element_active: function(element_id, active_flag) {
+		document.getElementById(element_id).setAttribute('data-active', active_flag);
 	},
-	populate_valve_array: function() {
-		this.populate_generic_device_array('valve');
+	update_thermistor_controls: function(thermistor_data_object_array) {
+		thermistor_data_object_array.forEach(function(data_object) {
+			document.getElementById('t' + data_object.id).innerHTML = data_object.temperature;
+		});
+	},
+	update_valve_controls: function(valve_data_object_array) {
+		valve_data_object_array.forEach(function(data_object) {
+			ctrl.make_element_active('v' + data_object.id, data_object.state);
+		});
+	},
+	update_pump_controls: function(pump_data_object_array) {
+		pump_data_object_array.forEach(function(data_object) {
+			ctrl.make_element_active('p' + data_object.id, data_object.state);
+		});
+	},
+	update_heater_controls: function(heater_data_object_array) {
+		heater_data_object_array.forEach(function(data_object) {
+			ctrl.make_element_active('h' + data_object.id, data_object.state);
+		});
+	},
+	update_main_switch_control: function(data_object) {
+		this.make_element_active('main-switch', data_object.state);
+	},		
+	make_secure_post_request: function(request_url) {
+		$.ajax({
+			url: request_url, 
+			method: 'POST',
+			data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].getAttribute('value') } 
+		});
 	},
 	toggle_device: function(device_btn_elm) {
-		$.ajax({
-			url: '/api/' + this.get_device_type(device_btn_elm) + '/' + this.get_device_no(device_btn_elm) + '/toggle/', 
-			method: 'POST',
-			data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].getAttribute('value') } 
-		});
-	},
-	adjust_main_switch: function() {
-		$.ajax({
-			url: '/api/automation/', 
-			method: 'GET',
-			success: function(response) {
-				document.getElementById('main-switch').setAttribute('data-active', response[0].state);
-			}
-		});
-
+		this.make_secure_post_request('/api/' + this.get_device_type(device_btn_elm) + '/' + this.get_device_no(device_btn_elm) + '/toggle/');
 	},
 	toggle_automation: function() {
+		this.make_secure_post_request('/api/automation/toggle/');
+	},
+	update_all_controls: function() {
 		$.ajax({
-			url: '/api/automation/toggle/', 
-			method: 'POST',
-			data: { csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].getAttribute('value') } 
+			url: '/api/',
+			method: 'GET',
+			success: function(responseData) {
+				ctrl.update_thermistor_controls(responseData.thermistor);
+				ctrl.update_valve_controls(responseData.valve);
+				ctrl.update_pump_controls(responseData.pump);
+				ctrl.update_heater_controls(responseData.heater);
+				ctrl.update_main_switch_control(responseData.automation);
+			}
 		});
 	},
 };

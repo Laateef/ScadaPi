@@ -9,64 +9,79 @@ var plot = {
 				backgroundColor: 'rgb(255, 0, 0)',
 				borderColor: 'rgb(255, 0, 0)',
 				data: [],
-				fill: false,
 			}, {
 				label: 'T2    ',
 				backgroundColor: 'rgb(255, 159, 64)',
 				borderColor: 'rgb(255, 159, 64)',
 				data: [],
-				fill: false,
 			}, {
 				label: 'T3    ',
 				backgroundColor: 'rgb(255, 225, 0)',
 				borderColor: 'rgb(255, 225, 0)',
 				data: [],
-				fill: false,
 			}, {
 				label: 'T4    ',
 				backgroundColor: 'rgb(107,142,35)',
 				borderColor: 'rgb(107,142,35)',
 				data: [],
-				fill: false,
 			}, {
 				label: 'T5    ',
 				backgroundColor: 'rgb(54, 162, 235)',
 				borderColor: 'rgb(54, 162, 235)',
 				data: [],
-				fill: false,
 			}, {
 				label: 'T6    ',
 				backgroundColor: 'rgb(153, 102, 255)',
 				borderColor: 'rgb(153, 102, 255)',
 				data: [],
-				fill: false,
 			}, {
 				label: 'T7    ',
 				backgroundColor: 'rgb(0, 245, 250)',
 				borderColor: 'rgb(0, 245, 250)',
 				data: [],
-				fill: false,
 			}, {
 				label: 'T8    ',
 				backgroundColor: 'rgb(160, 160, 160)',
 				borderColor: 'rgb(160, 160, 160)',
 				data: [],
-				fill: false,
 			}]
 		},
 		options: {
+			events: ['click', 'mousemove'],
 			responsive: true,
+			animation: {
+				duration: 0,
+			},
+			legend: {
+				onHover: function(e) { 
+					e.target.style.cursor = 'pointer';
+				}
+			},
+			hover: {
+				animationDuration: 0,
+				mode: 'nearest',
+				intersect: true,
+				onHover: function(e) {
+					e.target.style.cursor = 'default';
+				}
+			},
+			responsiveAnimationDuration: 0,
 			title: {
 				display: true,
 				text: ''
 			},
 			tooltips: {
-				mode: 'index',
-				intersect: false,
+				enabled: false,
 			},
-			hover: {
-				mode: 'nearest',
-				intersect: true
+			elements: {
+				point: {
+					radius: 0,
+				},
+				line: {
+					borderWidth: 1,
+					fill: false,
+					tension: 0,				
+				}
 			},
 			scales: {
 				xAxes: [{
@@ -83,18 +98,17 @@ var plot = {
 						display: true,
 						labelString: 'Temperature'
 					}
-				}]
+				}],
 			}
 		}
 	},
 	init: function() {
 		var chart_element = document.getElementById('temperature-chart');
 		var chart_context = chart_element.getContext('2d');
-		
 		this.chart_object = new Chart(chart_context, this.chart_config);
 	},
 	append_temperature_data: function(data_object) {
-		this.chart_config.data.labels.push(data_object.date);
+		this.chart_config.data.labels.push(moment(data_object.date));
 
 		this.chart_config.data.datasets.forEach(function(dataset, index){
 			dataset.data.push(data_object.temperature_array[index]);
@@ -115,7 +129,8 @@ var plot = {
 
 		var experiment_anchor_element = document.createElement('a');
 		experiment_anchor_element.setAttribute('class', 'experiment-link');
-		experiment_anchor_element.setAttribute('onclick', 'plot.select_experiment(this)');
+		// when an experiment link is clicked, make it current and then update the chart
+		experiment_anchor_element.setAttribute('onclick', 'plot.select_experiment(this); setTimeout(plot.update_temperature, 100);'); 
 		experiment_anchor_element.appendChild(experiment_id_element);
 		experiment_anchor_element.appendChild(decorative_arrow_element);
 		experiment_anchor_element.appendChild(experiment_date_element);
@@ -133,7 +148,7 @@ var plot = {
 		var request_url = '/api/temperature/?experiment=' + $('.experiment-link.active')[0].firstElementChild.innerHTML;
 
 		if (this.chart_config.data.labels.length)
-			request_url += '&last_date=' + plot.chart_config.data.labels[plot.chart_config.data.labels.length - 1];
+			request_url += '&last_date=' + plot.chart_config.data.labels[plot.chart_config.data.labels.length - 1].format(moment.HTML5_FMT.DATETIME_LOCAL_SECONDS);
 
 		$.ajax({
 			url: request_url,

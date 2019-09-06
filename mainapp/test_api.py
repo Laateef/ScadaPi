@@ -332,12 +332,12 @@ class ExperimentAndTemperatureApiTest(TransactionTestCase):
 		response_object = json.loads(response.content.decode('utf8'))
 		self.assertEqual(len(response_object), 2)
 		self.assertEqual(response_object[0]['id'], 2)
-		self.assertEqual(response_object[0]['start_date'], '2019-06-27 16:30:25')
+		self.assertEqual(response_object[0]['start_date'], '2019-06-27T16:30:25')
 		self.assertEqual(response_object[1]['id'], 3)
-		self.assertEqual(response_object[1]['start_date'], '2019-06-29 17:30:25')
+		self.assertEqual(response_object[1]['start_date'], '2019-06-29T17:30:25')
 
 	def test_returns_temperature_records_after_a_specific_date(self):
-		response = self.client.get('/api/temperature/?experiment=2&last_date=2019-6-27 16:30:26')
+		response = self.client.get('/api/temperature/?experiment=2&last_date=2019-6-27T16:30:26')
 
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(response['content-type'], 'application/json')
@@ -346,8 +346,8 @@ class ExperimentAndTemperatureApiTest(TransactionTestCase):
 		self.assertEqual(len(response_object), 2)
 		self.assertEqual(response_object[0]['id'], 3)
 		self.assertEqual(response_object[0]['experiment'], 2)
-		self.assertEqual(response_object[0]['date'], '2019-06-27 16:30:28')
+		self.assertEqual(response_object[0]['date'], '2019-06-27T16:30:28')
 		self.assertEqual(response_object[1]['id'], 4)
 		self.assertEqual(response_object[1]['experiment'], 2)
-		self.assertEqual(response_object[1]['date'], '2019-06-27 16:30:30')
+		self.assertEqual(response_object[1]['date'], '2019-06-27T16:30:30')
 

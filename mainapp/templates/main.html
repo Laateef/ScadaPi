@@ -73,7 +73,8 @@
 		</article>
 
 		<script src="/static/js/jquery-3.4.1.min.js"></script>
-		<script src="/static/js/Chart.bundle.min.js"></script>
+		<script src="/static/js/moment.min.js"></script>
+		<script src="/static/js/Chart.min.js"></script>
 		<script src="/static/js/main.js"></script>
 		<script src="/static/js/ctrl.js"></script>
 		<script src="/static/js/plot.js"></script>
@@ -85,14 +86,9 @@
 
 			plot.update_experiment();
 			
-			setInterval(function(){
-				ctrl.populate_thermistor_array();
-				ctrl.populate_heater_array();
-				ctrl.populate_pump_array();
-				ctrl.populate_valve_array();
-				ctrl.adjust_main_switch();
-				plot.update_temperature();
-			}, 1000);
+			setInterval(ctrl.update_all_controls, 1000);
+
+			setInterval(plot.update_temperature, 3000);
 
 			// We have actually one heater. However, due to the high current the heater draws, we dedicated two relays to it.
 			// The relays of the heater shoud be actuated simultaneously.

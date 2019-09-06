@@ -38,18 +38,19 @@
 			<a class="experiment-link">
 				<span class="experiment-id">2</span>
 				<span class="decorative-arrow">&gt;</span>
-				<span class="experiment-date">2019-11-17 09:55:61</span>
+				<span class="experiment-date">2019-11-17T09:55:61</span>
 			</a>
 			<a class="experiment-link">
 				<span class="experiment-id">1</span>
 				<span class="decorative-arrow">&gt;</span>
-				<span class="experiment-date">2019-05-12 13:52:01</span>
+				<span class="experiment-date">2019-05-12T13:52:01</span>
 			</a>
 		</div>
 	</div>
 
 	<script src="../js/jquery-3.4.1.min.js"></script>
-	<script src="../js/Chart.bundle.min.js"></script>
+	<script src="../js/moment.min.js"></script>
+	<script src="../js/Chart.min.js"></script>
 	<script src="../js/ctrl.js"></script>	
 	<script src="../js/plot.js"></script>
 	<script src="qunit-2.9.2.js"></script>
@@ -73,8 +74,8 @@
 			assert.equal(ctrl.get_device_type(document.getElementById('t8')), 'thermistor');
 		});
 
-		QUnit.test("populate thermistor boxes with temperature values by ajax", function(assert){
-			var responseData = [
+		QUnit.test("update the UI controls of thermistor devices", function(assert){
+			var thermistor_data_object_array = [
 				{'id': 1, 'temperature': 25.1},
 				{'id': 2, 'temperature': 26.2},
 				{'id': 3, 'temperature': 27.3},
@@ -84,63 +85,111 @@
 				{'id': 7, 'temperature': 31.7},  
 				{'id': 8, 'temperature': 32.8}
 			];
-			server.respondWith('GET', '/api/thermistor/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
-			
-			ctrl.populate_thermistor_array();
 
-			server.respond();
-			
-			for(var i = 1; i <= responseData.length; ++i)
-				assert.equal(document.getElementById('t' + i).innerHTML, responseData[i - 1].temperature);
+			ctrl.update_thermistor_controls(thermistor_data_object_array);
+
+			thermistor_data_object_array.forEach(function(thermistor_data_object, index) {
+				assert.equal(document.getElementById('t' + thermistor_data_object.id).innerHTML, thermistor_data_object.temperature);
+			});
 		});
 
-		QUnit.test("fetch and set heater device state by ajax", function(assert){
-			var responseData = [
-				{'id': 1, 'state': 1},
-				{'id': 2, 'state': 0}
+		QUnit.test("update the UI controls of valve devices", function(assert) {
+			var valve_data_object_array = [
+					{'id': 1, 'state': 1}, 
+					{'id': 2, 'state': 1}, 
+					{'id': 3, 'state': 0}, 
+					{'id': 4, 'state': 1}, 
+					{'id': 5, 'state': 1}
 			];
-			server.respondWith('GET', '/api/heater/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
-			
-			ctrl.populate_heater_array();
 
-			server.respond();
-			
-			for(var i = 1; i <= responseData.length; ++i)
-				assert.equal(document.getElementById('h' + i).getAttribute('data-active'), responseData[i - 1].state);
+			ctrl.update_valve_controls(valve_data_object_array);
+
+			valve_data_object_array.forEach(function(data_object) {
+				assert.equal(document.getElementById('v' + data_object.id).getAttribute('data-active'), data_object.state);
+			});
 		});
 
-		QUnit.test("fetch and set pump device state by ajax", function(assert){
-			var responseData = [
-				{'id': 1, 'state': 1}, 
-				{'id': 2, 'state': 1}, 
-				{'id': 3, 'state': 0}
+		QUnit.test("update the UI controls of pump devices", function(assert){
+			var pump_data_object_array = [
+					{'id': 1, 'state': 1}, 
+					{'id': 2, 'state': 1}, 
+					{'id': 3, 'state': 0}
 			];
-			server.respondWith('GET', '/api/pump/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
-			
-			ctrl.populate_pump_array();
 
-			server.respond();
-			
-			for(var i = 1; i <= responseData.length; ++i)
-				assert.equal(document.getElementById('p' + i).getAttribute('data-active'), responseData[i - 1].state);
+			ctrl.update_pump_controls(pump_data_object_array);
+
+			pump_data_object_array.forEach(function(data_object) {
+				assert.equal(document.getElementById('p' + data_object.id).getAttribute('data-active'), data_object.state);
+			});
 		});
 
-		QUnit.test("fetch and set valve device state by ajax", function(assert){
-			var responseData = [
-				{'id': 1, 'state': 1}, 
-				{'id': 2, 'state': 1}, 
-				{'id': 3, 'state': 0}, 
-				{'id': 4, 'state': 1}, 
-				{'id': 5, 'state': 1}
+		QUnit.test("update the UI controls of heater devices", function(assert){
+			var heater_data_object_array = [
+					{'id': 1, 'state': 1},
+					{'id': 2, 'state': 0}
 			];
-			server.respondWith('GET', '/api/valve/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
 			
-			ctrl.populate_valve_array();
+			ctrl.update_heater_controls(heater_data_object_array);
+
+			heater_data_object_array.forEach(function(data_object) {
+				assert.equal(document.getElementById('h' + data_object.id).getAttribute('data-active'), data_object.state);
+			});
+		});
+
+		QUnit.test("fetch and update all UI controls by ajax", function(assert){
+			var responseData = { 
+				'thermistor': [ 
+					{'id': 1, 'temperature': 25.1},
+					{'id': 2, 'temperature': 26.2},
+					{'id': 3, 'temperature': 27.3},
+					{'id': 4, 'temperature': 28.4},
+					{'id': 5, 'temperature': 29.5},
+					{'id': 6, 'temperature': 30.6},
+					{'id': 7, 'temperature': 31.7},  
+					{'id': 8, 'temperature': 32.8}
+				],
+				'valve': [ 
+					{'id': 1, 'state': 1}, 
+					{'id': 2, 'state': 1}, 
+					{'id': 3, 'state': 0}, 
+					{'id': 4, 'state': 1}, 
+					{'id': 5, 'state': 1} 
+				],
+				'pump': [ 
+					{'id': 1, 'state': 1}, 
+					{'id': 2, 'state': 1}, 
+					{'id': 3, 'state': 0} 
+				],
+				'heater': [ 
+					{'id': 1, 'state': 1}, 
+					{'id': 2, 'state': 0} 
+				],
+				'automation': {'state': 1} 
+			};
+
+			server.respondWith('GET', '/api/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
+			
+			ctrl.update_all_controls();
 
 			server.respond();
 			
-			for(var i = 1; i <= responseData.length; ++i)
-				assert.equal(document.getElementById('v' + i).getAttribute('data-active'), responseData[i - 1].state);
+			responseData.thermistor.forEach(function(thermistor_object) {
+				assert.equal(document.getElementById('t' + thermistor_object.id).innerHTML, thermistor_object.temperature);
+			});
+				
+			responseData.valve.forEach(function(valve_object) {
+				assert.equal(document.getElementById('v' + valve_object.id).getAttribute('data-active'), valve_object.state);
+			});
+
+			responseData.pump.forEach(function(pump_object) {
+				assert.equal(document.getElementById('p' + pump_object.id).getAttribute('data-active'), pump_object.state);
+			});
+
+			responseData.heater.forEach(function(heater_object, index) {
+				assert.equal(document.getElementById('h' + heater_object.id).getAttribute('data-active'), heater_object.state);
+			});
+
+			assert.equal(document.getElementById('main-switch').getAttribute('data-active'), responseData.automation.state);
 		});
 
 		QUnit.test("toggle heater device state by ajax", function(assert){
@@ -177,25 +226,18 @@
 
 		QUnit.test("adjust main switch by ajax", function(assert){
 			startStopButton = document.getElementById('main-switch')
+
 			assert.equal(startStopButton.getAttribute('data-active'), '0')
 
-			var responseData = [{'state': 1}];
+			var automation_data_object = {'state': 1};
 
-			server.respondWith('GET', '/api/automation/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
-			
-			ctrl.adjust_main_switch();
-
-			server.respond();
+			ctrl.update_main_switch_control(automation_data_object);
 
 			assert.equal(startStopButton.getAttribute('data-active'), '1')
 
-			responseData = [{'state': 0}];
+			automation_data_object = {'state': 0};
 
-			server.respondWith('GET', '/api/automation/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
-
-			ctrl.adjust_main_switch();
-
-			server.respond();
+			ctrl.update_main_switch_control(automation_data_object);
 
 			assert.equal(startStopButton.getAttribute('data-active'), '0')
 		});
@@ -235,8 +277,8 @@
 			plot.init();
 
 			var responseData = [
-				{'id': 1, 'start_date': '2019-08-02 13:06:32', 'end_date': '2019-08-02 13:06:32'},
-				{'id': 2, 'start_date': '2019-08-03 14:06:32', 'end_date': '2019-08-03 15:16:38'}
+				{'id': 1, 'start_date': '2019-08-02T13:06:32', 'end_date': '2019-08-02T13:06:32'},
+				{'id': 2, 'start_date': '2019-08-03T14:06:32', 'end_date': '2019-08-03T15:16:38'}
 			];
 			
 			server.respondWith('GET', '/api/experiment/', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
@@ -260,9 +302,9 @@
 			assert.equal(first_anchor_element.children[1].getAttribute('class'), 'decorative-arrow');
 			assert.equal(first_anchor_element.children[1].innerHTML, '&gt;'); // escaped character of >
 			assert.equal(first_anchor_element.children[2].getAttribute('class'), 'experiment-date');
-			assert.equal(first_anchor_element.children[2].innerHTML, '2019-08-02 13:06:32');
+			assert.equal(first_anchor_element.children[2].innerHTML, '2019-08-02T13:06:32');
 
-			responseData = [{'id': 3, 'start_date': '2019-08-04 15:06:32', 'end_date': '2019-08-04 16:32:40'}];
+			responseData = [{'id': 3, 'start_date': '2019-08-04T15:06:32', 'end_date': '2019-08-04T16:32:40'}];
 
 			server.respondWith('GET', '/api/experiment/?last=2', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
 
@@ -285,8 +327,8 @@
 			plot.init();
 
 			var responseData = [
-				{'id': 1, 'experiment': 2, 'date': '2019-08-02 13:06:32', 'temperature_array': [28.5, 29.9, 31.4, 32.2, 22.5, 48.7, 68.1, 66.8]},
-				{'id': 2, 'experiment': 2, 'date': '2019-08-02 13:09:21', 'temperature_array': [29.6, 30.0, 32.5, 33.3, 23.6, 49.8, 69.2, 67.9]}
+				{'id': 1, 'experiment': 2, 'date': '2019-08-02T13:06:32', 'temperature_array': [28.5, 29.9, 31.4, 32.2, 22.5, 48.7, 68.1, 66.8]},
+				{'id': 2, 'experiment': 2, 'date': '2019-08-02T13:09:21', 'temperature_array': [29.6, 30.0, 32.5, 33.3, 23.6, 49.8, 69.2, 67.9]}
 			];
 			
 			server.respondWith('GET', '/api/temperature/?experiment=2', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
@@ -299,27 +341,28 @@
 			assert.equal(server.requests[0].url, '/api/temperature/?experiment=2');
 			assert.equal(server.requests[0].method, 'GET');
 
-			assert.equal(plot.chart_config.data.labels.length, 2);
-			assert.equal(plot.chart_config.data.labels[plot.chart_config.data.labels.length - 1], responseData[1].date)
+			assert.equal(plot.chart_config.data.labels.length, 2); 
+			assert.ok(plot.chart_config.data.labels[plot.chart_config.data.labels.length - 1].isSame(moment(responseData[1].date)))
 
 			plot.chart_config.data.datasets.forEach(function(dataset, index){
 				assert.equal(dataset.data[dataset.data.length - 1], responseData[1].temperature_array[index]);
 			});
 
-			responseData = [{ 'id': 3, 'experiment': 2, 'date': '2019-08-02 13:12:02', 'temperature_array': [30.7, 31.1, 33.6, 34.4, 24.7, 50.9, 70.3, 69.0] }];
+			responseData = [{ 'id': 3, 'experiment': 2, 'date': '2019-08-02T13:12:02', 'temperature_array': [30.7, 31.1, 33.6, 34.4, 24.7, 50.9, 70.3, 69.0] }];
 
-			server.respondWith('GET', '/api/temperature/?experiment=2&last_date=2019-08-02 13:09:21', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
+			server.respondWith('GET', '/api/temperature/?experiment=2&last_date=2019-08-02T13:09:21', [200, {"content-type": "application/json"}, JSON.stringify(responseData)]);
 
 			plot.update_temperature();
 
 			server.respond();
 
 			assert.equal(server.requests.length, 2);
-			assert.equal(server.requests[1].url, '/api/temperature/?experiment=2&last_date=2019-08-02 13:09:21');
+			assert.equal(server.requests[1].url, '/api/temperature/?experiment=2&last_date=2019-08-02T13:09:21');
 			assert.equal(server.requests[1].method, 'GET');
 
 			assert.equal(plot.chart_config.data.labels.length, 3);
-			assert.equal(plot.chart_config.data.labels[plot.chart_config.data.labels.length - 1], responseData[0].date)
+			//assert.equal(plot.chart_config.data.labels[plot.chart_config.data.labels.length - 1], responseData[0].date)
+			assert.ok(plot.chart_config.data.labels[plot.chart_config.data.labels.length - 1].isSame(moment(responseData[0].date)))
 
 			plot.chart_config.data.datasets.forEach(function(dataset, index){
 				assert.equal(dataset.data[dataset.data.length - 1], responseData[0].temperature_array[index]);

@@ -8,8 +8,6 @@ from . import util, models
 
 import json
 
-from datetime import datetime
-
 def thermistor_view(request, thermistor_id=None):
 	return HttpResponse(util.thermistor_state_as_json(thermistor_id) if thermistor_id else util.thermistor_state_list_as_json(), content_type='application/json')
 
@@ -47,7 +45,7 @@ def automation_view(request, operation=None):
 		elif operation == 'toggle': automation.toggle()		
 		return HttpResponse()
 
-	return HttpResponse(json.dumps([{ 'state': automation.running }]), content_type='application/json')
+	return HttpResponse(json.dumps([{ 'state': (automation.running * 1) }]), content_type='application/json')
 
 def experiment_view(request):
 	last_experiment_id = request.GET.get('last')
@@ -57,7 +55,7 @@ def experiment_view(request):
 	if last_experiment_id:
 		experiment_list = experiment_list.filter(id__gt=last_experiment_id)
 	
-	return HttpResponse(json.dumps([{'id': e.id, 'start_date': datetime.strftime(e.start_date, '%Y-%m-%d %H:%M:%S'), 'end_date': datetime.strftime(e.end_date, '%Y-%m-%d %H:%M:%S')} for e in experiment_list]), content_type='application/json')
+	return HttpResponse(json.dumps([{'id': e.id, 'start_date': e.start_date.replace(tzinfo=None).isoformat(), 'end_date': e.end_date.replace(tzinfo=None).isoformat()} for e in experiment_list]), content_type='application/json')
 
 def temperature_view(request):
 	temperature_object_list = models.Temperature.objects.filter(experiment=request.GET.get('experiment'))
@@ -70,7 +68,7 @@ def temperature_view(request):
 	return HttpResponse(json.dumps([{
 				'id': t.id,
 				'experiment': t.experiment_id,
-				'date': datetime.strftime(t.date, '%Y-%m-%d %H:%M:%S'),
+				'date': t.date.replace(tzinfo=None).isoformat(),
 				'temperature_array': [float(t.thermistor_1), float(t.thermistor_2), float(t.thermistor_3), float(t.thermistor_4), float(t.thermistor_5), float(t.thermistor_6), float(t.thermistor_7), float(t.thermistor_8)]
 					} for t in temperature_object_list]), content_type='application/json')
 
