@@ -31,23 +31,23 @@ var ctrl = {
 		document.getElementById(element_id).setAttribute('data-active', active_flag);
 	},
 	update_thermistor_controls: function(thermistor_data_object_array) {
-		thermistor_data_object_array.forEach(function(data_object) {
-			document.getElementById('t' + data_object.id).innerHTML = data_object.temperature;
+		$(thermistor_data_object_array).each(function() {
+			document.getElementById('t' + this.id).innerHTML = this.temperature;
 		});
 	},
 	update_valve_controls: function(valve_data_object_array) {
-		valve_data_object_array.forEach(function(data_object) {
-			ctrl.make_element_active('v' + data_object.id, data_object.state);
+		$(valve_data_object_array).each(function() {
+			ctrl.make_element_active('v' + this.id, this.state);
 		});
 	},
 	update_pump_controls: function(pump_data_object_array) {
-		pump_data_object_array.forEach(function(data_object) {
-			ctrl.make_element_active('p' + data_object.id, data_object.state);
+		$(pump_data_object_array).each(function() {
+			ctrl.make_element_active('p' + this.id, this.state);
 		});
 	},
 	update_heater_controls: function(heater_data_object_array) {
-		heater_data_object_array.forEach(function(data_object) {
-			ctrl.make_element_active('h' + data_object.id, data_object.state);
+		$(heater_data_object_array).each(function() {
+			ctrl.make_element_active('h' + this.id, this.state);
 		});
 	},
 	update_main_switch_control: function(data_object) {

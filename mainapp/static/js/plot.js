@@ -110,8 +110,8 @@ var plot = {
 	append_temperature_data: function(data_object) {
 		this.chart_config.data.labels.push(moment(data_object.date));
 
-		this.chart_config.data.datasets.forEach(function(dataset, index){
-			dataset.data.push(data_object.temperature_array[index]);
+		$(this.chart_config.data.datasets).each(function(index){
+			this.data.push(data_object.temperature_array[index]);
 		});
 	},
 	prepend_experiment_data: function(data_object) {
@@ -154,8 +154,8 @@ var plot = {
 			url: request_url,
 			method: 'GET',
 			success: function(response) {
-				response.forEach(function(object){ 
-					plot.append_temperature_data(object); 
+				$(response).each(function(){ 
+					plot.append_temperature_data(this); 
 				});
 			}
 		});
@@ -172,8 +172,8 @@ var plot = {
 			url: request_url,
 			method: 'GET',
 			success: function(response) {
-				response.forEach(function(object){ 
-					plot.prepend_experiment_data(object); 
+				$(response).each(function(){ 
+					plot.prepend_experiment_data(this); 
 				});
 
 				if ($('.experiment-link.active').length == 0)

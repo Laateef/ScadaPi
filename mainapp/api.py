@@ -55,7 +55,7 @@ def experiment_view(request):
 	if last_experiment_id:
 		experiment_list = experiment_list.filter(id__gt=last_experiment_id)
 	
-	return HttpResponse(json.dumps([{'id': e.id, 'start_date': e.start_date.replace(tzinfo=None).isoformat(), 'end_date': e.end_date.replace(tzinfo=None).isoformat()} for e in experiment_list]), content_type='application/json')
+	return HttpResponse(json.dumps([{'id': e.id, 'start_date': e.start_date.replace(tzinfo=None).isoformat('T', 'seconds'), 'end_date': e.end_date.replace(tzinfo=None).isoformat('T', 'seconds')} for e in experiment_list]), content_type='application/json')
 
 def temperature_view(request):
 	temperature_object_list = models.Temperature.objects.filter(experiment=request.GET.get('experiment'))
@@ -68,7 +68,7 @@ def temperature_view(request):
 	return HttpResponse(json.dumps([{
 				'id': t.id,
 				'experiment': t.experiment_id,
-				'date': t.date.replace(tzinfo=None).isoformat(),
+				'date': t.date.replace(tzinfo=None).isoformat('T', 'seconds'),
 				'temperature_array': [float(t.thermistor_1), float(t.thermistor_2), float(t.thermistor_3), float(t.thermistor_4), float(t.thermistor_5), float(t.thermistor_6), float(t.thermistor_7), float(t.thermistor_8)]
 					} for t in temperature_object_list]), content_type='application/json')
 

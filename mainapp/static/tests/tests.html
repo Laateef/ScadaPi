@@ -296,7 +296,6 @@
 			// because experiment_view lists the items in reverse, last inserted item is at the top
 			var first_anchor_element = experiment_view.children[1];
 			assert.equal(first_anchor_element.getAttribute('class'), 'experiment-link');
-			assert.equal(first_anchor_element.getAttribute('onclick'), 'plot.select_experiment(this)');
 			assert.equal(first_anchor_element.children[0].getAttribute('class'), 'experiment-id');
 			assert.equal(first_anchor_element.children[0].innerHTML, 1);
 			assert.equal(first_anchor_element.children[1].getAttribute('class'), 'decorative-arrow');
