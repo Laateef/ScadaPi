@@ -116,7 +116,7 @@ nav {
 	border-left: 5px solid #6EE0FF;
 }
 
-#experiment-view .experiment-link.active {
+#experiment-view .experiment-link[data-active='1'] {
 	background-color: #DCDCDC;
 	border-left: 5px solid dodgerblue;
 }

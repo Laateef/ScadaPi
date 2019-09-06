@@ -129,8 +129,9 @@ var plot = {
 
 		var experiment_anchor_element = document.createElement('a');
 		experiment_anchor_element.setAttribute('class', 'experiment-link');
+		experiment_anchor_element.setAttribute('data-active', '0');
 		// when an experiment link is clicked, make it current and then update the chart
-		experiment_anchor_element.setAttribute('onclick', 'plot.select_experiment(this); setTimeout(plot.update_temperature, 100);'); 
+		experiment_anchor_element.setAttribute('onclick', 'plot.select_experiment_and_fetch_temperature(this)'); 
 		experiment_anchor_element.appendChild(experiment_id_element);
 		experiment_anchor_element.appendChild(decorative_arrow_element);
 		experiment_anchor_element.appendChild(experiment_date_element);
@@ -138,16 +139,16 @@ var plot = {
 		$('#experiment-view').prepend(experiment_anchor_element);
 	},
 	select_experiment: function(experiment_anchor_element) {
-		$('.experiment-link.active').removeClass('active');
-		$(experiment_anchor_element).addClass('active');
+		$('.experiment-link').attr('data-active', '0');
+		$(experiment_anchor_element).attr('data-active', '1');
 	},
 	update_temperature: function() {
-		if ($('.experiment-link.active').length == 0)
+		if ($('.experiment-link[data-active="1"]').length == 0)
 			return;
 
-		var request_url = '/api/temperature/?experiment=' + $('.experiment-link.active')[0].firstElementChild.innerHTML;
+		var request_url = '/api/temperature/?experiment=' + $('.experiment-link[data-active="1"]')[0].firstElementChild.innerHTML;
 
-		if (this.chart_config.data.labels.length)
+		if (plot.chart_config.data.labels.length)
 			request_url += '&last_date=' + plot.chart_config.data.labels[plot.chart_config.data.labels.length - 1].format(moment.HTML5_FMT.DATETIME_LOCAL_SECONDS);
 
 		$.ajax({
@@ -157,10 +158,10 @@ var plot = {
 				$(response).each(function(){ 
 					plot.append_temperature_data(this); 
 				});
+
+				plot.chart_object.update();
 			}
 		});
-		
-		this.chart_object.update();
 	},
 	update_experiment: function() {
 		var request_url = '/api/experiment/';
@@ -176,9 +177,13 @@ var plot = {
 					plot.prepend_experiment_data(this); 
 				});
 
-				if ($('.experiment-link.active').length == 0)
-					plot.select_experiment(document.getElementById('experiment-view').firstElementChild);
+				if ($('.experiment-link[data-active="1"]').length == 0)
+					plot.select_experiment($('.experiment-link')[0]);
 			}
 		});
+	},
+	select_experiment_and_fetch_temperature: function(experiment_anchor_element) {
+		plot.select_experiment(experiment_anchor_element);
+		plot.update_temperature();
 	}
 };

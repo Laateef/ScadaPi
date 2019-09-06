@@ -31,10 +31,15 @@ def single_generic_device_actuation_view(request, device_type, device_id, device
 	return HttpResponse()
 
 def all_devices_state_list_view(request):
-	return HttpResponse(json.dumps([{ 'thermistor': json.loads(util.thermistor_state_list_as_json()) },
-					{ 'heater': json.loads(util.generic_devices_state_list_as_json('heater')) },
-					{ 'valve': json.loads(util.generic_devices_state_list_as_json('valve')) },
-					{ 'pump': json.loads(util.generic_devices_state_list_as_json('pump')) } ]), content_type='application/json')
+	from raspberrypi import automation
+
+	return HttpResponse(json.dumps({
+			'thermistor': json.loads(util.thermistor_state_list_as_json()),
+			'heater': json.loads(util.generic_devices_state_list_as_json('heater')),
+			'valve': json.loads(util.generic_devices_state_list_as_json('valve')),
+			'pump': json.loads(util.generic_devices_state_list_as_json('pump')),
+			'automation' : { 'state': (automation.running * 1) }
+		}), content_type='application/json')
 
 def automation_view(request, operation=None):
 	from raspberrypi import automation

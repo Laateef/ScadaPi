@@ -35,12 +35,12 @@
 
 		<canvas id="temperature-chart"></canvas>
 		<div id="experiment-view">
-			<a class="experiment-link">
+			<a class="experiment-link" data-active="0">
 				<span class="experiment-id">2</span>
 				<span class="decorative-arrow">&gt;</span>
 				<span class="experiment-date">2019-11-17T09:55:61</span>
 			</a>
-			<a class="experiment-link">
+			<a class="experiment-link" data-active="0">
 				<span class="experiment-id">1</span>
 				<span class="decorative-arrow">&gt;</span>
 				<span class="experiment-date">2019-05-12T13:52:01</span>
@@ -245,18 +245,18 @@
 		QUnit.test("select an experiment", function(assert){
 			var experiment_link_list = document.getElementById('experiment-view').children;
 
-			assert.equal(experiment_link_list[0].getAttribute('class'), 'experiment-link');
-			assert.equal(experiment_link_list[1].getAttribute('class'), 'experiment-link');
+			assert.equal(experiment_link_list[0].getAttribute('data-active'), '0');
+			assert.equal(experiment_link_list[1].getAttribute('data-active'), '0');
 
 			plot.select_experiment(experiment_link_list[0]);
 
-			assert.equal(experiment_link_list[0].getAttribute('class'), 'experiment-link active');
-			assert.equal(experiment_link_list[1].getAttribute('class'), 'experiment-link');
+			assert.equal(experiment_link_list[0].getAttribute('data-active'), '1');
+			assert.equal(experiment_link_list[1].getAttribute('data-active'), '0');
 
 			plot.select_experiment(experiment_link_list[1]);
 
-			assert.equal(experiment_link_list[0].getAttribute('class'), 'experiment-link');
-			assert.equal(experiment_link_list[1].getAttribute('class'), 'experiment-link active');
+			assert.equal(experiment_link_list[0].getAttribute('data-active'), '0');
+			assert.equal(experiment_link_list[1].getAttribute('data-active'), '1');
 		});
 
 		QUnit.test("when no experiment is selected (or exists), update_temperature does nothing", function(assert){
@@ -294,14 +294,16 @@
 			assert.equal(experiment_view.childElementCount, 2);
 
 			// because experiment_view lists the items in reverse, last inserted item is at the top
-			var first_anchor_element = experiment_view.children[1];
+			var first_anchor_element = experiment_view.children[0];
 			assert.equal(first_anchor_element.getAttribute('class'), 'experiment-link');
+			assert.equal(first_anchor_element.getAttribute('onclick'), 'plot.select_experiment_and_fetch_temperature(this)');
+			assert.equal(first_anchor_element.getAttribute('data-active'), '1');
 			assert.equal(first_anchor_element.children[0].getAttribute('class'), 'experiment-id');
-			assert.equal(first_anchor_element.children[0].innerHTML, 1);
+			assert.equal(first_anchor_element.children[0].innerHTML, 2);
 			assert.equal(first_anchor_element.children[1].getAttribute('class'), 'decorative-arrow');
 			assert.equal(first_anchor_element.children[1].innerHTML, '&gt;'); // escaped character of >
 			assert.equal(first_anchor_element.children[2].getAttribute('class'), 'experiment-date');
-			assert.equal(first_anchor_element.children[2].innerHTML, '2019-08-02T13:06:32');
+			assert.equal(first_anchor_element.children[2].innerHTML, '2019-08-03T14:06:32');
 
 			responseData = [{'id': 3, 'start_date': '2019-08-04T15:06:32', 'end_date': '2019-08-04T16:32:40'}];
 

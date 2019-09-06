@@ -221,8 +221,8 @@ class AllDevicesApiTest(TestCase):
 		response = self.client.get('/api/')
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(response['content-type'], 'application/json')
-		self.assertEqual(json.loads(response.content.decode('utf8')), [
-			{ 'thermistor': [ 
+		self.assertEqual(json.loads(response.content.decode('utf8')), { 
+			'thermistor': [ 
 				{'id': 1, 'temperature': 25.1},
 				{'id': 2, 'temperature': 26.2},
 				{'id': 3, 'temperature': 27.3},
@@ -230,21 +230,26 @@ class AllDevicesApiTest(TestCase):
 				{'id': 5, 'temperature': 29.5},
 				{'id': 6, 'temperature': 30.6},
 				{'id': 7, 'temperature': 31.7},  
-				{'id': 8, 'temperature': 32.8} ] },
-			{ 'heater': [ 
+				{'id': 8, 'temperature': 32.8}
+			], 
+			'heater': [ 
 				{'id': 1, 'state': 1}, 
-				{'id': 2, 'state': 0} ] },
-			{ 'valve': [ 
+				{'id': 2, 'state': 0} 
+			],
+			'valve': [ 
 				{'id': 1, 'state': 1}, 
 				{'id': 2, 'state': 1}, 
 				{'id': 3, 'state': 0}, 
 				{'id': 4, 'state': 1}, 
-				{'id': 5, 'state': 1} ] },
-			{ 'pump': [ 
+				{'id': 5, 'state': 1} 
+			],
+			'pump': [ 
 				{'id': 1, 'state': 1}, 
 				{'id': 2, 'state': 1}, 
-				{'id': 3, 'state': 0} ] }
-		])
+				{'id': 3, 'state': 0} 
+			],
+			'automation': {'state': 0} 
+		})
 
 
 class AutomationApiTest(TestCase):
