@@ -44,9 +44,9 @@ header h1 {
 }
 
 .tab-content {
-	display: none;
-	padding: 6px 12px;
 	border: none;
+	display: none;
+	margin: 10px;
 }
 
 .tab-content h2 {
@@ -62,15 +62,13 @@ header h1 {
 }
 
 #control {
-	position: relative;
-	text-align: center;
+	padding: 0;
 }
 
 #control #panel {
-	position: absolute;
-	top: 8px;
-	left: 30px;
+	display: block;
 	font-weight: bold;
+	margin: 25px;
 }
 
 #control #panel * {
@@ -79,17 +77,16 @@ header h1 {
 }
 
 #diagram {
-	display: inline-block;
-	position: relative;
-	min-width: 1145px;
-	min-height: 768px;
+	display: block;
+	width: 1169px;
+	height: 828px;
 	background-image: url('/static/images/diagram.png');
 	border: none;
 	background-color: transparent;
 	background-repeat: no-repeat;
-	margin: 25px;
-	margin-top: 100px;
-
+	margin: 0 auto;
+	padding: 0;
+	position: relative;
 }
 
 #experiment-nav {
@@ -200,8 +197,8 @@ header h1 {
 
 .heater {
 	position: absolute;
-	width: 102px;
-	height: 54px;
+	width: 96px;
+	height: 49px;
 	background-image: url('/static/images/heater-off.png');
 }
 
@@ -210,13 +207,13 @@ header h1 {
 }
 
 #h1 {
-	top: 600px;
-	left: 916px;
+	top: 665px;
+	left: 1000px;
 }
 
 #h2 {
-	top: 600px;
-	left: 1011px;
+	top: 665px;
+	left: 1000px;
 }
 .pump {
 	position: absolute;
@@ -230,24 +227,24 @@ header h1 {
 }
 
 #p1 {
-	top: 435px;
-	left: 41px;
+	top: 525px;
+	left: 62px;
 }
 
 #p2 {
-	top: 435px;
+	top: 525px;
 	left: 483px;
 }
 
 #p3 {
-	top: 435px;
-	left: 920px;
+	top: 525px;
+	left: 905px;
 }
 
 #v1 {
 	position: absolute;
-	top: -18px;
-	left: 530px;
+	top: 58px;
+	left: 542px;
 	width: 88px;
 	height: 49px;
 	background-image: url('/static/images/two-way-valve-off.png');
@@ -264,23 +261,23 @@ header h1 {
 }
 
 #v2 {
-	top: 288px;
-	left: 50px;
+	top: 390px;
+	left: 73px;
 }
 
 #v3 {
-	top: 226px;
-	left: 150px;
+	top: 310px;
+	left: 193px;
 }
 
 #v4 {
-	top: 232px;
-	left: 903px;
+	top: 318px;
+	left: 888px;
 }
 
 #v5 {
-	top: 295px;
-	left: 1002px;
+	top: 398px;
+	left: 1008px;
 }
 
 #v2, #v3 {
@@ -308,41 +305,41 @@ header h1 {
 }
 
 #t1 {
-	top: -90px;
-	left: 400px;
+	top: 495px;
+	left: 685px;
 }
 
 #t2 {
-	top: -90px;
-	left: 470px;
+	top: 175px;
+	left: 45px;
 }
 
 #t3 {
-	top: -90px;
-	left: 540px;
+	top: 255px;
+	left: 265px;
 }
 
 #t4 {
-	top: -90px;
-	left: 610px;
+	top: 255px;
+	left: 885px;
 }
 
 #t5 {
-	top: -90px;
-	left: 680px;
+	top: 175px;
+	left: 1105px;
 }
 
 #t6 {
-	top: -90px;
-	left: 750px;
+	top: 695px;
+	left: 95px;
 }
 
 #t7 {
-	top: -90px;
-	left: 820px;
+	top: 695px;
+	left: 515px;
 }
 
 #t8 {
-	top: -90px;
-	left: 890px;
+	top: 695px;
+	left: 935px;
 }
