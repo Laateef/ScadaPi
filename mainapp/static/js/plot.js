@@ -139,14 +139,14 @@ var plot = {
 		experiment_plot_button_element.setAttribute('class', 'experiment-plot-button');
 		experiment_plot_button_element.setAttribute('data-active', '0');
 		// when an experiment button is clicked, make it current and then update the chart
-		experiment_plot_button_element.setAttribute('onclick', 'plot.select_experiment_and_fetch_temperature(this)'); 
+		experiment_plot_button_element.setAttribute('onclick', 'plot.select_experiment_and_fetch_temperature(this.parentElement)'); 
 		experiment_plot_button_element.appendChild(experiment_id_element);
 		experiment_plot_button_element.appendChild(decorative_arrow_element);
 		experiment_plot_button_element.appendChild(experiment_date_element);
 
 		var experiment_delete_button_element = document.createElement('button');
 		experiment_delete_button_element.setAttribute('class', 'experiment-delete-button');
-		experiment_delete_button_element.setAttribute('onclick', 'plot.delete_experiment(this.parentElement)'); 
+		experiment_delete_button_element.setAttribute('onclick', 'plot.delete_experiment_and_refresh_list(this.parentElement)'); 
 		experiment_delete_button_element.innerHTML = 'X';
 
 		var experiment_item_element = document.createElement('li');
@@ -206,12 +206,16 @@ var plot = {
 		plot.select_experiment(experiment_item_element);
 		plot.update_temperature();
 	},
-	delete_experiment: function(experiment_delete_button_element) {
+	delete_experiment: function(experiment_item_element) {
 		if ($('.experiment-item[data-active="1"]').length == 0)
 			return;
 
-		var experiment_item_element = experiment_delete_button_element.parentElement;
 		var experiment_id = experiment_item_element.firstElementChild.firstElementChild.innerHTML;
 		ctrl.make_secure_post_request('/api/experiment/' + experiment_id + '/delete/');
+	},
+	delete_experiment_and_refresh_list: function(experiment_item_element) {
+		plot.delete_experiment(experiment_item_element);
+
+		experiment_item_element.parentElement.removeChild(experiment_item_element);
 	}
 };

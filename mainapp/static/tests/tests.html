@@ -327,7 +327,7 @@
 
 			var experiment_plot_button_element = first_experiment_item_element.children[0];
 			assert.equal(experiment_plot_button_element.getAttribute('class'), 'experiment-plot-button');			
-			assert.equal(experiment_plot_button_element.getAttribute('onclick'), 'plot.select_experiment_and_fetch_temperature(this)');
+			assert.equal(experiment_plot_button_element.getAttribute('onclick'), 'plot.select_experiment_and_fetch_temperature(this.parentElement)');
 
 			var experiment_id_element = experiment_plot_button_element.children[0];
 			assert.equal(experiment_id_element.getAttribute('class'), 'experiment-id');			
@@ -343,7 +343,7 @@
 
 			var experiment_delete_button_element = first_experiment_item_element.children[1];
 			assert.equal(experiment_delete_button_element.getAttribute('class'), 'experiment-delete-button');
-			assert.equal(experiment_delete_button_element.getAttribute('onclick'), 'plot.delete_experiment(this.parentElement)');
+			assert.equal(experiment_delete_button_element.getAttribute('onclick'), 'plot.delete_experiment_and_refresh_list(this.parentElement)');
 			assert.equal(experiment_delete_button_element.innerHTML, 'X');
 
 			responseData = [{'id': 3, 'start_date': '2019-08-04T15:06:32', 'end_date': '2019-08-04T16:32:40'}];
@@ -422,11 +422,22 @@
 
 			plot.select_experiment(second_experiment_item);
 		
-			plot.delete_experiment(second_experiment_item.lastElementChild);
+			plot.delete_experiment(second_experiment_item);
 			
 			assert.equal(server.requests.length, 1);
 			assert.equal(server.requests[0].url, '/api/experiment/1/delete/');
 			assert.equal(server.requests[0].method, 'POST');
+		});
+
+		QUnit.test("refresh experiment list after an experiment is deleted", function(assert){
+			var experiment_item_list = document.getElementById('experiment-item-list');
+			var first_experiment_item = experiment_item_list.children[0];
+
+			assert.equal(experiment_item_list.childElementCount, 2);
+		
+			plot.delete_experiment_and_refresh_list(first_experiment_item);
+			
+			assert.equal(experiment_item_list.childElementCount, 1);
 		});
 	</script>
 
