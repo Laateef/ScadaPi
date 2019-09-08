@@ -79,4 +79,6 @@ var ctrl = {
 			}
 		});
 	},
+	delete_experiment: function() {
+	}
 };

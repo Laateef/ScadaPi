@@ -356,3 +356,11 @@ class ExperimentAndTemperatureApiTest(TransactionTestCase):
 		self.assertEqual(response_object[1]['experiment'], 2)
 		self.assertEqual(response_object[1]['date'], '2019-06-27T16:30:30')
 
+	def test_deletes_experiment_along_with_all_dependant_temperature_data(self):
+		response = self.client.get('/api/experiment/2/delete/')
+
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(models.Experiment.objects.filter(id=2).count(), 0)
+		self.assertEqual(models.Temperature.objects.filter(experiment_id=2).count(), 0)
+
+

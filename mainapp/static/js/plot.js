@@ -127,26 +127,36 @@ var plot = {
 		experiment_date_element.setAttribute('class', 'experiment-date');
 		experiment_date_element.innerHTML = data_object.start_date;
 
-		var experiment_anchor_element = document.createElement('a');
-		experiment_anchor_element.setAttribute('class', 'experiment-link');
-		experiment_anchor_element.setAttribute('data-active', '0');
-		// when an experiment link is clicked, make it current and then update the chart
-		experiment_anchor_element.setAttribute('onclick', 'plot.select_experiment_and_fetch_temperature(this)'); 
-		experiment_anchor_element.appendChild(experiment_id_element);
-		experiment_anchor_element.appendChild(decorative_arrow_element);
-		experiment_anchor_element.appendChild(experiment_date_element);
+		var experiment_plot_button_element = document.createElement('button');
+		experiment_plot_button_element.setAttribute('class', 'experiment-plot-button');
+		experiment_plot_button_element.setAttribute('data-active', '0');
+		// when an experiment button is clicked, make it current and then update the chart
+		experiment_plot_button_element.setAttribute('onclick', 'plot.select_experiment_and_fetch_temperature(this)'); 
+		experiment_plot_button_element.appendChild(experiment_id_element);
+		experiment_plot_button_element.appendChild(decorative_arrow_element);
+		experiment_plot_button_element.appendChild(experiment_date_element);
 
-		$('#experiment-view').prepend(experiment_anchor_element);
+		var experiment_delete_button_element = document.createElement('button');
+		experiment_delete_button_element.setAttribute('class', 'experiment-delete-button');
+		experiment_delete_button_element.setAttribute('onclick', 'ctrl.delete_experiment(this)'); 
+
+		var experiment_item_element = document.createElement('li');
+		experiment_item_element.setAttribute('class', 'experiment-item');
+		experiment_item_element.appendChild(experiment_plot_button_element);
+		experiment_item_element.appendChild(experiment_delete_button_element);
+
+		$('#experiment-item-list').prepend(experiment_item_element);
 	},
-	select_experiment: function(experiment_anchor_element) {
-		$('.experiment-link').attr('data-active', '0');
-		$(experiment_anchor_element).attr('data-active', '1');
+	select_experiment: function(experiment_item_element) {
+		$('.experiment-item').attr('data-active', '0');
+		$(experiment_item_element).attr('data-active', '1');
 	},
 	update_temperature: function() {
-		if ($('.experiment-link[data-active="1"]').length == 0)
+		if ($('.experiment-item[data-active="1"]').length == 0)
 			return;
 
-		var request_url = '/api/temperature/?experiment=' + $('.experiment-link[data-active="1"]')[0].firstElementChild.innerHTML;
+		console.log($('.experiment-item[data-active="1"]')[0]);
+		var request_url = '/api/temperature/?experiment=' + $('.experiment-item[data-active="1"]')[0].children[0].children[0].innerHTML;
 
 		if (plot.chart_config.data.labels.length)
 			request_url += '&last_date=' + plot.chart_config.data.labels[plot.chart_config.data.labels.length - 1].format(moment.HTML5_FMT.DATETIME_LOCAL_SECONDS);
@@ -166,8 +176,8 @@ var plot = {
 	update_experiment: function() {
 		var request_url = '/api/experiment/';
  
-		if ($('.experiment-link').length)
-			request_url += '?last=' + $('.experiment-link')[0].children[0].innerHTML;
+		if ($('.experiment-item').length)
+			request_url += '?last=' + $('.experiment-item')[0].children[0].children[0].innerHTML;
 
 		$.ajax({
 			url: request_url,

@@ -8,7 +8,7 @@ header h1 {
 	font-size: 2.2em;
 }
 
-nav {
+#main-tab-bar {
 	width: 100%;
 	background-color: #f1f1f1;
 	border: 1px solid #ccc;
@@ -92,63 +92,92 @@ nav {
 
 }
 
-#experiment-view {
-	float: left;
-	min-width: 265px;
-	overflow-y: scroll;
-	text-align: right;
+#experiment-nav {
+	background-color: transparent;
+	border: none;
+	border-left: 2px solid black;
 	border-top: 2px solid black;
-	padding: 10px;
+	float: left;
+	max-height: 700px;
+	overflow-y: scroll;
+	padding: 0;
+	text-align: left;
+	width: 275px;
 }
 
-#experiment-view .experiment-link {
-	display: block;
-	cursor: pointer;
-	background-color: #F5F5F5;
+.experiment-item {
 	color: navy;
-	padding: 7px;
+	display: block;
 	margin: 3px;
-	border: 1px solid gray;
+	padding: 0;
 }
 
-#experiment-view .experiment-link:hover {
+.experiment-item[data-active='1'] {
+	margin: 3px;
+	margin-left: 10px;
+}
+
+.experiment-plot-button {
+	border: 1px solid gray;
+	background-color: #F5F5F5;
+	cursor: pointer;
+	padding: 10px;
+	width: 88%
+}
+
+.experiment-item:hover .experiment-plot-button, .experiment-plot-button:hover {
 	background-color: #FBFBFB;
 	border-left: 5px solid #6EE0FF;
 }
 
-#experiment-view .experiment-link[data-active='1'] {
+.experiment-item[data-active='1'] .experiment-plot-button {
 	background-color: #DCDCDC;
 	border-left: 5px solid dodgerblue;
 }
 
-#experiment-view .experiment-id {
+.experiment-id {
 	color: navy;
 	font-weight: bold;
 }
 
-#experiment-view .decorative-arrow {
+.decorative-arrow {
 	color: darkmagenta;
 	margin-left: 3px;
 	margin-right: 5px;
 }
 
-#experiment-view .experiment-date {
+.experiment-date {
 	color: #555;
 }
 
+.experiment-delete-button {
+	color: maroon;
+	padding: 0;
+	visibility: hidden;
+}
+
+.experiment-item:hover .experiment-delete-button {
+	visibility: visible;
+
+}
+
+.experiment-item .experiment-delete-button:hover {
+	color: red;
+}
+
 #chart-view {
-	margin-left: 267px;
+	margin-left: 282px;
 	margin-right: 10px;
 	min-width: 700px;
 }
 
-#container::after {
+#experiment-chart-container::after {
 	content: "";
 	clear: both;
 	display: table;
 }
 
-button {
+#main-switch, .valve, .pump, .heater {
 	border: none;
 	background-color: transparent;
 	background-repeat: no-repeat;

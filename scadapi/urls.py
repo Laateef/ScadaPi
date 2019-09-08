@@ -25,6 +25,8 @@ urlpatterns = [
     url(r'^$', views.main_page),
 
     url(r'^api/experiment/$', api.experiment_view),
+    url(r'^api/experiment/(\d+)/delete/$', api.experiment_deletion_view),
+
     url(r'^api/temperature/$', api.temperature_view),
 
     url(r'^api/automation/$', api.automation_view),

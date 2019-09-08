@@ -34,18 +34,27 @@
 		<button id="h2" class="heater" data-active="1">Heater 2</button>
 
 		<canvas id="temperature-chart"></canvas>
-		<div id="experiment-view">
-			<a class="experiment-link" data-active="0">
-				<span class="experiment-id">2</span>
-				<span class="decorative-arrow">&gt;</span>
-				<span class="experiment-date">2019-11-17T09:55:61</span>
-			</a>
-			<a class="experiment-link" data-active="0">
-				<span class="experiment-id">1</span>
-				<span class="decorative-arrow">&gt;</span>
-				<span class="experiment-date">2019-05-12T13:52:01</span>
-			</a>
-		</div>
+		<ul id="experiment-item-list">
+
+			<li class="experiment-item" data-active="0">
+				<button class="experiment-plot-button" onclick="plot.select_experiment_and_fetch_temperature(this)">
+					<span class="experiment-id">2</span>
+					<span class="decorative-arrow">&gt;</span>
+					<span class="experiment-date">2019-11-17T09:55:61</span>
+
+				</button>
+				<button class="experiment-delete-button" onclick="ctrl.delete_experiment(this)">X</button>
+			</li>
+			<li class="experiment-item" data-active="0">
+				<button class="experiment-plot-button" onclick="plot.select_experiment_and_fetch_temperature(this)">
+					<span class="experiment-id">1</span>
+					<span class="decorative-arrow">&gt;</span>
+					<span class="experiment-date">2019-05-12T13:52:01</span>
+
+				</button>
+				<button class="experiment-delete-button" onclick="ctrl.delete_experiment(this)">X</button>
+			</li>
+		</ul>
 	</div>
 
 	<script src="../js/jquery-3.4.1.min.js"></script>
@@ -243,7 +252,7 @@
 		});
 
 		QUnit.test("select an experiment", function(assert){
-			var experiment_link_list = document.getElementById('experiment-view').children;
+			var experiment_link_list = document.getElementById('experiment-item-list').children;
 
 			assert.equal(experiment_link_list[0].getAttribute('data-active'), '0');
 			assert.equal(experiment_link_list[1].getAttribute('data-active'), '0');
@@ -270,9 +279,9 @@
 		});
 
 		QUnit.test("fetch experiment data from server by ajax", function(assert){
-			$('#experiment-view').empty();
+			$('#experiment-item-list').empty();
 
-			var experiment_view = document.getElementById('experiment-view');
+			var experiment_item_list = document.getElementById('experiment-item-list');
 
 			plot.init();
 
@@ -291,19 +300,28 @@
 			assert.equal(server.requests[0].url, '/api/experiment/');
 			assert.equal(server.requests[0].method, 'GET');
 
-			assert.equal(experiment_view.childElementCount, 2);
+			assert.equal(experiment_item_list.childElementCount, 2);
 
 			// because experiment_view lists the items in reverse, last inserted item is at the top
-			var first_anchor_element = experiment_view.children[0];
-			assert.equal(first_anchor_element.getAttribute('class'), 'experiment-link');
-			assert.equal(first_anchor_element.getAttribute('onclick'), 'plot.select_experiment_and_fetch_temperature(this)');
-			assert.equal(first_anchor_element.getAttribute('data-active'), '1');
-			assert.equal(first_anchor_element.children[0].getAttribute('class'), 'experiment-id');
-			assert.equal(first_anchor_element.children[0].innerHTML, 2);
-			assert.equal(first_anchor_element.children[1].getAttribute('class'), 'decorative-arrow');
-			assert.equal(first_anchor_element.children[1].innerHTML, '&gt;'); // escaped character of >
-			assert.equal(first_anchor_element.children[2].getAttribute('class'), 'experiment-date');
-			assert.equal(first_anchor_element.children[2].innerHTML, '2019-08-03T14:06:32');
+			var first_experiment_item_element = experiment_item_list.children[0];
+			assert.equal(first_experiment_item_element.getAttribute('class'), 'experiment-item');
+			assert.equal(first_experiment_item_element.getAttribute('data-active'), '0');
+
+			var experiment_plot_button_element = first_experiment_item_element.children[0];
+			assert.equal(experiment_plot_button_element.getAttribute('class'), 'experiment-plot-button');			
+			assert.equal(experiment_plot_button_element.getAttribute('onclick'), 'plot.select_experiment_and_fetch_temperature(this)');
+
+			var experiment_id_element = experiment_plot_button_element.children[0];
+			assert.equal(experiment_id_element.getAttribute('class'), 'experiment-id');			
+			assert.equal(experiment_id_element.innerHTML, 2);
+
+			var decorative_arrow_element = experiment_plot_button_element.children[1];
+			assert.equal(decorative_arrow_element.getAttribute('class'), 'decorative-arrow');
+			assert.equal(decorative_arrow_element.innerHTML, '&gt;'); // escaped character of >
+
+			var experiment_date_element = experiment_plot_button_element.children[2];
+			assert.equal(experiment_date_element.getAttribute('class'), 'experiment-date');
+			assert.equal(experiment_date_element.innerHTML, '2019-08-03T14:06:32');
 
 			responseData = [{'id': 3, 'start_date': '2019-08-04T15:06:32', 'end_date': '2019-08-04T16:32:40'}];
 
@@ -317,13 +335,13 @@
 			assert.equal(server.requests[1].url, '/api/experiment/?last=2');
 			assert.equal(server.requests[1].method, 'GET');
 
-			assert.equal(experiment_view.childElementCount, 3);
-			assert.equal(experiment_view.children[0].children[0].innerHTML, 3);
+			assert.equal(experiment_item_list.childElementCount, 3);
+			assert.equal(experiment_item_list.children[0].children[0].children[0].innerHTML, 3);
 		});
 
 		QUnit.test("fetch temperature data from server by ajax", function(assert){
 			// selecting an element is mandatory for plot.update_temperature() to work.
-			plot.select_experiment(document.getElementById('experiment-view').firstElementChild);
+			plot.select_experiment(document.getElementById('experiment-item-list').firstElementChild);
 
 			plot.init();
 

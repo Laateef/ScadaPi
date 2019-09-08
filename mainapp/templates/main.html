@@ -21,7 +21,7 @@
 		</nav>
 
 		<article class="tabs">
-			<section class="tab-content" id="control">	
+			<section id="control" class="tab-content">	
 				<div id="panel">		
 					<h2>Manual</h2>
 					<button id="main-switch" data-active="0" onclick="ctrl.toggle_automation(); setTimeout(plot.update_experiment, 1000);"></button>
@@ -53,18 +53,21 @@
 				</div>
 			</section>
 			
-			<section class="tab-content" id="monitor">
+			<section id="monitor" class="tab-content">
 				<h2>Experiments</h2>
-				<div id="container">
-					<div id="experiment-view">			
-					</div>
+				<div id="experiment-chart-container">
+					<nav id="experiment-nav">
+						<ul id="experiment-item-list">
+
+						</ul>
+					</nav>
 					<div id="chart-view">
 						<canvas id="temperature-chart"></canvas>
 					</div>
 				</div>
 			</section>
 			
-			<section class="tab-content" id="about">
+			<section id="about" class="tab-content">
 				<p>ScadaPi is SCADA software for metal hydride cooling system which is based on Raspberry Pi and some peripheral modules.</p><br/>
 				<p>This software is open source and licensed under the GNU General Public License v3.0. The project is hosted at <a href="https://github.com/Laateef/ScadaPi">Github.</a></p>
 <br/>
@@ -100,8 +103,6 @@
 			$('.pump, .valve').click(function(){ 
 				ctrl.toggle_device(this); 
 			} );		
-
-			window.onresize = main.adjust_experiment_view_height;
 		});
 		</script>
 	</body>

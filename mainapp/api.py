@@ -62,6 +62,11 @@ def experiment_view(request):
 	
 	return HttpResponse(json.dumps([{'id': e.id, 'start_date': e.start_date.replace(tzinfo=None).isoformat('T', 'seconds'), 'end_date': e.end_date.replace(tzinfo=None).isoformat('T', 'seconds')} for e in experiment_list]), content_type='application/json')
 
+def experiment_deletion_view(request, experiment_id):
+	models.Experiment.objects.filter(id=experiment_id).delete()
+
+	return HttpResponse()
+
 def temperature_view(request):
 	temperature_object_list = models.Temperature.objects.filter(experiment=request.GET.get('experiment'))
 

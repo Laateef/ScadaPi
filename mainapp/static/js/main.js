@@ -13,8 +13,5 @@ var main = {
 
 		document.getElementById(element.href.substr(element.href.indexOf('#') + 1)).style.display = 'block';
 		element.className += ' active';
-	},
-	adjust_experiment_view_height: function () {
-		document.getElementById('experiment-view').setAttribute('style', 'height:' + document.getElementById('chart-view').offsetHeight + 'px');	
 	}
 };
