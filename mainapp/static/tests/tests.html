@@ -268,9 +268,7 @@
 			assert.equal(experiment_link_list[1].getAttribute('data-active'), '1');
 		});
 
-		QUnit.test("when no experiment is selected (or exists), update_temperature does nothing", function(assert){
-			$('.experiment-link').removeClass('active');
-			
+		QUnit.test("when no experiment is selected (or exists), update_temperature() does nothing", function(assert){		
 			plot.init();
 
 			plot.update_temperature();
@@ -305,7 +303,7 @@
 			// because experiment_view lists the items in reverse, last inserted item is at the top
 			var first_experiment_item_element = experiment_item_list.children[0];
 			assert.equal(first_experiment_item_element.getAttribute('class'), 'experiment-item');
-			assert.equal(first_experiment_item_element.getAttribute('data-active'), '0');
+			assert.equal(first_experiment_item_element.getAttribute('data-active'), '1');
 
 			var experiment_plot_button_element = first_experiment_item_element.children[0];
 			assert.equal(experiment_plot_button_element.getAttribute('class'), 'experiment-plot-button');			
@@ -388,6 +386,23 @@
 			});
 		});
 
+		QUnit.test("when no experiment is selected, delete_experiment() does nothing", function(assert){
+			plot.delete_experiment(document.getElementById('experiment-item-list').children[0].children[1]);
+
+			assert.equal(server.requests.length, 0);
+		});
+
+		QUnit.test("delete a selected experiment", function(assert){
+			var second_experiment_item = document.getElementById('experiment-item-list').children[1];
+
+			plot.select_experiment(second_experiment_item);
+		
+			plot.delete_experiment(second_experiment_item.lastElementChild);
+			
+			assert.equal(server.requests.length, 1);
+			assert.equal(server.requests[0].url, '/api/experiment/1/delete/');
+			assert.equal(server.requests[0].method, 'POST');
+		});
 	</script>
 
 </body>

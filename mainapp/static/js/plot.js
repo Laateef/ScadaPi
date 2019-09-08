@@ -187,13 +187,21 @@ var plot = {
 					plot.prepend_experiment_data(this); 
 				});
 
-				if ($('.experiment-link[data-active="1"]').length == 0)
-					plot.select_experiment($('.experiment-link')[0]);
+				if ($('.experiment-item[data-active="1"]').length == 0)
+					plot.select_experiment($('.experiment-item')[0]);
 			}
 		});
 	},
-	select_experiment_and_fetch_temperature: function(experiment_anchor_element) {
-		plot.select_experiment(experiment_anchor_element);
+	select_experiment_and_fetch_temperature: function(experiment_item_element) {
+		plot.select_experiment(experiment_item_element);
 		plot.update_temperature();
+	},
+	delete_experiment: function(experiment_delete_button_element) {
+		if ($('.experiment-item[data-active="1"]').length == 0)
+			return;
+
+		var experiment_item_element = experiment_delete_button_element.parentElement;
+		var experiment_id = experiment_item_element.firstElementChild.firstElementChild.innerHTML;
+		ctrl.make_secure_post_request('/api/experiment/' + experiment_id + '/delete/');
 	}
 };

@@ -78,7 +78,5 @@ var ctrl = {
 				ctrl.update_main_switch_control(responseData.automation);
 			}
 		});
-	},
-	delete_experiment: function() {
 	}
 };
