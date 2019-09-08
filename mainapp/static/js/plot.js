@@ -217,5 +217,7 @@ var plot = {
 		plot.delete_experiment(experiment_item_element);
 
 		experiment_item_element.parentElement.removeChild(experiment_item_element);
+
+		plot.reset_chart_data();
 	}
 };

@@ -97,8 +97,8 @@
 
 			ctrl.update_thermistor_controls(thermistor_data_object_array);
 
-			thermistor_data_object_array.forEach(function(thermistor_data_object, index) {
-				assert.equal(document.getElementById('t' + thermistor_data_object.id).innerHTML, thermistor_data_object.temperature);
+			$(thermistor_data_object_array).each(function(index) {
+				assert.equal(document.getElementById('t' + this.id).innerHTML, this.temperature);
 			});
 		});
 
@@ -113,8 +113,8 @@
 
 			ctrl.update_valve_controls(valve_data_object_array);
 
-			valve_data_object_array.forEach(function(data_object) {
-				assert.equal(document.getElementById('v' + data_object.id).getAttribute('data-active'), data_object.state);
+			$(valve_data_object_array).each(function() {
+				assert.equal(document.getElementById('v' + this.id).getAttribute('data-active'), this.state);
 			});
 		});
 
@@ -127,8 +127,8 @@
 
 			ctrl.update_pump_controls(pump_data_object_array);
 
-			pump_data_object_array.forEach(function(data_object) {
-				assert.equal(document.getElementById('p' + data_object.id).getAttribute('data-active'), data_object.state);
+			$(pump_data_object_array).each(function() {
+				assert.equal(document.getElementById('p' + this.id).getAttribute('data-active'), this.state);
 			});
 		});
 
@@ -140,8 +140,8 @@
 			
 			ctrl.update_heater_controls(heater_data_object_array);
 
-			heater_data_object_array.forEach(function(data_object) {
-				assert.equal(document.getElementById('h' + data_object.id).getAttribute('data-active'), data_object.state);
+			$(heater_data_object_array).each(function() {
+				assert.equal(document.getElementById('h' + this.id).getAttribute('data-active'), this.state);
 			});
 		});
 
@@ -182,20 +182,20 @@
 
 			server.respond();
 			
-			responseData.thermistor.forEach(function(thermistor_object) {
-				assert.equal(document.getElementById('t' + thermistor_object.id).innerHTML, thermistor_object.temperature);
+			$(responseData.thermistor).each(function() {
+				assert.equal(document.getElementById('t' + this.id).innerHTML, this.temperature);
 			});
 				
-			responseData.valve.forEach(function(valve_object) {
-				assert.equal(document.getElementById('v' + valve_object.id).getAttribute('data-active'), valve_object.state);
+			$(responseData.valve).each(function() {
+				assert.equal(document.getElementById('v' + this.id).getAttribute('data-active'), this.state);
 			});
 
-			responseData.pump.forEach(function(pump_object) {
-				assert.equal(document.getElementById('p' + pump_object.id).getAttribute('data-active'), pump_object.state);
+			$(responseData.pump).each(function() {
+				assert.equal(document.getElementById('p' + this.id).getAttribute('data-active'), this.state);
 			});
 
-			responseData.heater.forEach(function(heater_object, index) {
-				assert.equal(document.getElementById('h' + heater_object.id).getAttribute('data-active'), heater_object.state);
+			$(responseData.heater).each(function() {
+				assert.equal(document.getElementById('h' + this.id).getAttribute('data-active'), this.state);
 			});
 
 			assert.equal(document.getElementById('main-switch').getAttribute('data-active'), responseData.automation.state);
@@ -386,8 +386,8 @@
 			assert.equal(plot.chart_config.data.labels.length, 2); 
 			assert.ok(plot.chart_config.data.labels[plot.chart_config.data.labels.length - 1].isSame(moment(responseData[1].date)))
 
-			plot.chart_config.data.datasets.forEach(function(dataset, index){
-				assert.equal(dataset.data[dataset.data.length - 1], responseData[1].temperature_array[index]);
+			$(plot.chart_config.data.datasets).each(function(index){
+				assert.equal(this.data[this.data.length - 1], responseData[1].temperature_array[index]);
 			});
 
 			responseData = [{ 'id': 3, 'experiment': 2, 'date': '2019-08-02T13:12:02', 'temperature_array': [30.7, 31.1, 33.6, 34.4, 24.7, 50.9, 70.3, 69.0] }];
@@ -406,8 +406,8 @@
 			//assert.equal(plot.chart_config.data.labels[plot.chart_config.data.labels.length - 1], responseData[0].date)
 			assert.ok(plot.chart_config.data.labels[plot.chart_config.data.labels.length - 1].isSame(moment(responseData[0].date)))
 
-			plot.chart_config.data.datasets.forEach(function(dataset, index){
-				assert.equal(dataset.data[dataset.data.length - 1], responseData[0].temperature_array[index]);
+			$(plot.chart_config.data.datasets).each(function(index){
+				assert.equal(this.data[this.data.length - 1], responseData[0].temperature_array[index]);
 			});
 		});
 
@@ -434,10 +434,22 @@
 			var first_experiment_item = experiment_item_list.children[0];
 
 			assert.equal(experiment_item_list.childElementCount, 2);
+
+			plot.chart_config.data.labels.push(1);
+
+			$(plot.chart_config.data.datasets).each(function(){
+				this.data.push(1);
+			});
 		
 			plot.delete_experiment_and_refresh_list(first_experiment_item);
 			
 			assert.equal(experiment_item_list.childElementCount, 1);
+
+			assert.equal(plot.chart_config.data.labels.length, 0)
+
+			$(plot.chart_config.data.datasets).each(function(){
+				assert.equal(this.data.length, 0);
+			});			
 		});
 	</script>
 
