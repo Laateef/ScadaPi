@@ -102,10 +102,18 @@ var plot = {
 			}
 		}
 	},
+	reset_chart_data: function() {
+		this.chart_config.data.labels = [];
+		$(this.chart_config.data.datasets).each(function(index){
+			this.data = [];
+		});
+	},
 	init: function() {
 		var chart_element = document.getElementById('temperature-chart');
 		var chart_context = chart_element.getContext('2d');
 		this.chart_object = new Chart(chart_context, this.chart_config);
+
+		plot.reset_chart_data();
 	},
 	append_temperature_data: function(data_object) {
 		this.chart_config.data.labels.push(moment(data_object.date));
@@ -138,7 +146,8 @@ var plot = {
 
 		var experiment_delete_button_element = document.createElement('button');
 		experiment_delete_button_element.setAttribute('class', 'experiment-delete-button');
-		experiment_delete_button_element.setAttribute('onclick', 'ctrl.delete_experiment(this)'); 
+		experiment_delete_button_element.setAttribute('onclick', 'plot.delete_experiment(this.parentElement)'); 
+		experiment_delete_button_element.innerHTML = 'X';
 
 		var experiment_item_element = document.createElement('li');
 		experiment_item_element.setAttribute('class', 'experiment-item');
@@ -150,12 +159,13 @@ var plot = {
 	select_experiment: function(experiment_item_element) {
 		$('.experiment-item').attr('data-active', '0');
 		$(experiment_item_element).attr('data-active', '1');
+
+		plot.reset_chart_data();
 	},
 	update_temperature: function() {
 		if ($('.experiment-item[data-active="1"]').length == 0)
 			return;
 
-		console.log($('.experiment-item[data-active="1"]')[0]);
 		var request_url = '/api/temperature/?experiment=' + $('.experiment-item[data-active="1"]')[0].children[0].children[0].innerHTML;
 
 		if (plot.chart_config.data.labels.length)

@@ -43,7 +43,7 @@
 					<span class="experiment-date">2019-11-17T09:55:61</span>
 
 				</button>
-				<button class="experiment-delete-button" onclick="ctrl.delete_experiment(this)">X</button>
+				<button class="experiment-delete-button" onclick="plot.delete_experiment(this.parentElement)">X</button>
 			</li>
 			<li class="experiment-item" data-active="0">
 				<button class="experiment-plot-button" onclick="plot.select_experiment_and_fetch_temperature(this)">
@@ -52,7 +52,7 @@
 					<span class="experiment-date">2019-05-12T13:52:01</span>
 
 				</button>
-				<button class="experiment-delete-button" onclick="ctrl.delete_experiment(this)">X</button>
+				<button class="experiment-delete-button" onclick="ctrl.delete_experiment(this.parentElement)">X</button>
 			</li>
 		</ul>
 	</div>
@@ -268,6 +268,26 @@
 			assert.equal(experiment_link_list[1].getAttribute('data-active'), '1');
 		});
 
+		QUnit.test("when another experiment is selected, last experiment temperature data is removed", function(assert){
+			plot.select_experiment(document.getElementById('experiment-item-list').children[1]);
+
+			var responseData = [
+				{'id': 1, 'experiment': 1, 'date': '2019-08-02T13:06:32', 'temperature_array': [28.5, 29.9, 31.4, 32.2, 22.5, 48.7, 68.1, 66.8]},
+				{'id': 2, 'experiment': 1, 'date': '2019-08-02T13:09:21', 'temperature_array': [29.6, 30.0, 32.5, 33.3, 23.6, 49.8, 69.2, 67.9]}
+			];
+
+			plot.append_temperature_data(responseData[0]);
+			plot.append_temperature_data(responseData[1]);
+
+			plot.select_experiment(document.getElementById('experiment-item-list').children[0]);
+
+			assert.equal(plot.chart_config.data.labels.length, 0)
+
+			$(plot.chart_config.data.datasets).each(function(){
+				assert.equal(this.data.length, 0);
+			});
+		});
+
 		QUnit.test("when no experiment is selected (or exists), update_temperature() does nothing", function(assert){		
 			plot.init();
 
@@ -320,6 +340,11 @@
 			var experiment_date_element = experiment_plot_button_element.children[2];
 			assert.equal(experiment_date_element.getAttribute('class'), 'experiment-date');
 			assert.equal(experiment_date_element.innerHTML, '2019-08-03T14:06:32');
+
+			var experiment_delete_button_element = first_experiment_item_element.children[1];
+			assert.equal(experiment_delete_button_element.getAttribute('class'), 'experiment-delete-button');
+			assert.equal(experiment_delete_button_element.getAttribute('onclick'), 'plot.delete_experiment(this.parentElement)');
+			assert.equal(experiment_delete_button_element.innerHTML, 'X');
 
 			responseData = [{'id': 3, 'start_date': '2019-08-04T15:06:32', 'end_date': '2019-08-04T16:32:40'}];
 
