@@ -10,8 +10,7 @@ class Thermistor:
 
 	@staticmethod
 	def voltage_to_resistance(voltage_value):
-		voltage_value = enums.ADC_SOURCE_VOLTAGE - voltage_value
-		return enums.ADC_REFERENCE_RESISTANCE * ( voltage_value / (enums.ADC_SOURCE_VOLTAGE - voltage_value) )
+		return enums.ADC_REFERENCE_RESISTANCE * ( (enums.ADC_SOURCE_VOLTAGE / voltage_value) - 1 )
 
 	@staticmethod
 	def resistance_to_temperature(resistance_value):
