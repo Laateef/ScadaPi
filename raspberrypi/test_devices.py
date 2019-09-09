@@ -16,17 +16,33 @@ class ThermistorModuleTest(TestCase):
 		self.assertAlmostEqual(devices.Thermistor.voltage_to_resistance(1.65), 10000)
 		self.assertAlmostEqual(devices.Thermistor.voltage_to_resistance(3), 1000)
 
+	def test_voltage_to_resistance_throws_ValueError_if_voltage_is_zero(self):
+		self.assertRaises(ValueError, devices.Thermistor.voltage_to_resistance, 0)
+
 	def test_returns_thermistor_temperature_given_resistance(self):
 		# NTC thermistor with B=3980 has resistance of 10000(ohm) at 25(c) 
 		self.assertAlmostEqual(devices.Thermistor.resistance_to_temperature(10000), 25)
 
+	def test_resistance_to_temperature_throws_ValueError_if_resistance_less_or_equals_zero(self):
+		self.assertRaises(ValueError, devices.Thermistor.resistance_to_temperature, 0)
+		self.assertRaises(ValueError, devices.Thermistor.resistance_to_temperature, -1)
+
 	@patch('raspberrypi.devices.interfaces.ADC', autospec=True)
 	def test_returns_thermistor_1_temperature(self, adcMock):
-		adcMock.readChannel.return_value = 16384
+		adcMock.return_value.readChannel.return_value = 13200
 
 		temperature_value = devices.Thermistor.temperature(1)
 
 		self.assertAlmostEqual(temperature_value, 25)
+		adcMock.assert_called_once()
+		adcMock.return_value.readChannel.assert_called_once_with(0)
+
+	@patch('raspberrypi.devices.interfaces.ADC', autospec=True)
+	def test_temperature_catch_thrown_exceptions_and_returns_99_point_9(self, adcMock):
+		adcMock.return_value.readChannel.return_value = 0
+
+		self.assertAlmostEqual(devices.Thermistor.temperature(1), 999.9)
+
 		adcMock.assert_called_once()
 		adcMock.return_value.readChannel.assert_called_once_with(0)
 
@@ -40,7 +56,7 @@ class ThermistorModuleTest(TestCase):
 		adcMock.return_value.readChannel.side_effect = iter([10798, 11100, 12306, 13200, 17522, 23627, 24665, 16350])
 
 		temperature_array = devices.Thermistor.temperature_list()
-		expected_array = [17, 18, 22, 25, 41, 82, 99, 36.28]
+		expected_array = [17, 18, 22, 25, 41, 82, 99, 36.3]
 		for i in range (0, enums.TOTAL_CHANNEL_COUNT):
 			self.assertAlmostEqual(temperature_array[i], expected_array[i], delta = 0.01)
 
