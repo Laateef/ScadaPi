@@ -214,6 +214,9 @@ var plot = {
 		ctrl.make_secure_post_request('/api/experiment/' + experiment_id + '/delete/');
 	},
 	delete_experiment_and_refresh_list: function(experiment_item_element) {
+		if (!confirm('Are you sure?'))
+			return;
+
 		plot.delete_experiment(experiment_item_element);
 
 		experiment_item_element.parentElement.removeChild(experiment_item_element);

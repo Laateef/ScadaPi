@@ -43,7 +43,7 @@
 					<span class="experiment-date">2019-11-17T09:55:61</span>
 
 				</button>
-				<button class="experiment-delete-button" onclick="plot.delete_experiment(this.parentElement)">X</button>
+				<button class="experiment-delete-button" onclick="plot.delete_experiment_and_refresh_list(this.parentElement)">X</button>
 			</li>
 			<li class="experiment-item" data-active="0">
 				<button class="experiment-plot-button" onclick="plot.select_experiment_and_fetch_temperature(this)">
@@ -52,7 +52,7 @@
 					<span class="experiment-date">2019-05-12T13:52:01</span>
 
 				</button>
-				<button class="experiment-delete-button" onclick="ctrl.delete_experiment(this.parentElement)">X</button>
+				<button class="experiment-delete-button" onclick="plot.delete_experiment_and_refresh_list(this.parentElement)">X</button>
 			</li>
 		</ul>
 	</div>
