@@ -10,7 +10,7 @@
 		{% csrf_token %}
 
 		<header>
-			<h1>ScadaPi</h1>
+			<label class="project-name">ScadaPi</label><label class="project-version"> v1.0</label>
 			<p>SCADA software for metal hydride cooling system based on Raspberry Pi.</p>
 		</header>
 		
@@ -69,6 +69,12 @@
 				<p>This software is open source and licensed under the GNU General Public License v3.0. The project is hosted at <a href="https://github.com/Laateef/ScadaPi">Github.</a></p>
 <br/>
 				<p>Copyright (C) 2019 Abdullatif Kalla. E-mail: <a href="mailto:abdullatif.kalla@gmail.com">abdullatif.kalla@gmail.com</a>.</p>
+				<br/>
+				<br/>
+				<div class="provision-frame">
+				<p>To fetch the lateset updates from the remote repository, press on provision. Please make sure that you have no active experiment and you are connected to the internet before starting the process.</p>
+				<button id="provision-button" onclick="ctrl.provision();">Provision</button>
+				</div>
 			</section>
 		</article>
 

@@ -451,6 +451,14 @@
 				assert.equal(this.data.length, 0);
 			});			
 		});
+
+		QUnit.test("provisioning", function(assert){
+			ctrl.provision();
+			
+			assert.equal(server.requests.length, 1);
+			assert.equal(server.requests[0].url, '/api/provision/');
+			assert.equal(server.requests[0].method, 'POST');
+		});
 	</script>
 
 </body>

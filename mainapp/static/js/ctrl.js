@@ -78,5 +78,9 @@ var ctrl = {
 				ctrl.update_main_switch_control(responseData.automation);
 			}
 		});
+	},
+	provision: function() {
+		if (confirm('Are you sure?'))
+			this.make_secure_post_request('/api/provision/');
 	}
 };

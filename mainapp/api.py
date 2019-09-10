@@ -8,6 +8,8 @@ from . import util, models
 
 import json
 
+import os
+
 def thermistor_view(request, thermistor_id=None):
 	return HttpResponse(util.thermistor_state_as_json(thermistor_id) if thermistor_id else util.thermistor_state_list_as_json(), content_type='application/json')
 
@@ -81,4 +83,12 @@ def temperature_view(request):
 				'date': t.date.replace(tzinfo=None).isoformat('T', 'seconds'),
 				'temperature_array': [float(t.thermistor_1), float(t.thermistor_2), float(t.thermistor_3), float(t.thermistor_4), float(t.thermistor_5), float(t.thermistor_6), float(t.thermistor_7), float(t.thermistor_8)]
 					} for t in temperature_object_list]), content_type='application/json')
+
+def provision_view(request):
+	os.system("cd /home/pi/project/scadapi")
+	os.system("git checkout -- .")
+	os.system("git pull")
+	os.system("ps aux | grep gunicorn | grep scadapi | awk '{ print $2 }' | xargs kill -HUP")
+
+	return HttpResponse()
 

@@ -24,6 +24,8 @@ from mainapp import api
 urlpatterns = [
     url(r'^$', views.main_page),
 
+    url(r'^api/provision/$', api.provision_view),
+
     url(r'^api/experiment/$', api.experiment_view),
     url(r'^api/experiment/(\d+)/delete/$', api.experiment_deletion_view),
 

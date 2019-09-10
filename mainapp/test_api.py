@@ -363,4 +363,17 @@ class ExperimentAndTemperatureApiTest(TransactionTestCase):
 		self.assertEqual(models.Experiment.objects.filter(id=2).count(), 0)
 		self.assertEqual(models.Temperature.objects.filter(experiment_id=2).count(), 0)
 
+@patch('mainapp.api.os.system', autospec=True)
+class ProvisionApiTest(TestCase):
+	def test_provision(self, systemMethod):
+		response = self.client.post('/api/provision/')
+
+		self.assertEqual(systemMethod.call_args_list, [
+			call("cd /home/pi/project/scadapi"),
+			call("git checkout -- ."), 
+			call("git pull"), 
+			call("ps aux | grep gunicorn | grep scadapi | awk '{ print $2 }' | xargs kill -HUP")
+		])
+		self.assertEqual(response.status_code, 200)
+
 
