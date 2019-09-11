@@ -16,7 +16,7 @@ ADC_CFG_MUX_AIN_2		= 0x60 # Single-ended P = AIN2, N = GND
 ADC_CFG_MUX_AIN_3		= 0x70 # Single-ended P = AIN3, N = GND
 ADC_CFG_MUX_OFFSET		= 0x04
 ADC_CFG_PGA			= 0x00 # +/-6.144V range
-ADC_CFG_MODE			= 0x00 # Continuous conversion mode
+ADC_CFG_MODE			= 0x01 # Single conversion mode
 ADC_CFG_DR			= 0x00 # 8 samples per second
 ADC_CFG_COMP_QUE		= 0x03 # Disable the comparator and put ALERT/RDY in high state
 
