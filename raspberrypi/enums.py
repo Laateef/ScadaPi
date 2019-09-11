@@ -15,13 +15,13 @@ ADC_CFG_MUX_AIN_1		= 0x50 # Single-ended P = AIN1, N = GND
 ADC_CFG_MUX_AIN_2		= 0x60 # Single-ended P = AIN2, N = GND
 ADC_CFG_MUX_AIN_3		= 0x70 # Single-ended P = AIN3, N = GND
 ADC_CFG_MUX_OFFSET		= 0x04
-ADC_CFG_PGA			= 0x01 # +/-4.096V range = Gain 1
+ADC_CFG_PGA			= 0x00 # +/-6.144V range
 ADC_CFG_MODE			= 0x00 # Continuous conversion mode
 ADC_CFG_DR			= 0x80 # 128 samples per second
 ADC_CFG_COMP_QUE		= 0x03 # Disable the comparator and put ALERT/RDY in high state
 
 
-ADC_SCALE_LSB_SIZE_IN_VOLT	= 0.000125 
+ADC_SCALE_LSB_SIZE_IN_VOLT	= 0.0001875 
 ADC_SAMPLE_PER_SECOND		= 128
 
 AIN_CMN_CFG_HByte 		= ADC_CFG_OS | ADC_CFG_PGA | ADC_CFG_MODE
@@ -30,7 +30,7 @@ AIN_CMN_CFG_LByte 		= ADC_CFG_DR | ADC_CFG_COMP_QUE
 MODULE_CHANNEL_COUNT		= 4
 TOTAL_CHANNEL_COUNT		= 8
 		
-ADC_SOURCE_VOLTAGE		= 3.3 	 # Source Voltage: 3.3(v)		
+ADC_SOURCE_VOLTAGE		= 5 	 # Source Voltage: 5(v)		
 ADC_REFERENCE_RESISTANCE	= 10000  # Reference Resistance: 10000(ohm)
 
 NTC_STANDARD_TEMPERATURE	= 25 	 # Thermistor Standard Temperature: 25(c) 
